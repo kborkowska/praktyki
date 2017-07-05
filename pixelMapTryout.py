@@ -19,18 +19,42 @@ class GUI(pq.QWidget):
 		super(GUI,self).__init__()
 		self.setSize()
 		self.createPixelMap()
+		self.createSlider(1, 0, 10)
 		self.show()
 
 	def createPixelMap(self):
 		#after debug remove globals
 		global graph
-		graph = pq.QPixmap(self.w,self.h)
+		graph = pq.QPixmap(self.w-80,self.h-40)
 		col = pq.QColor()
+		#col.setHsv(0,0*255,0*255,255)
 		col.setHsv(307,0.57*255,0.969*255,255)
 		graph.fill(col)
 		global gLabel
 		gLabel = pq.QLabel(self)
 		gLabel.setPixmap(graph)
+		gLabel.move(40,0)
+
+	def createSlider(self, tickInterval, minimum, maximum):
+		slider = pq.QSlider(pcq.Vertical,self)
+		slider.setTickInterval(tickInterval)
+		slider.setMinimum(minimum)
+		slider.setMaximum(maximum)
+		#slider.setTrackig(True)
+		slider.setTickPosition(pq.QSlider.TicksLeft)
+		sw = 40
+		slider.setGeometry(self.w-sw,0,sw,self.h)
+		#slider.setStyleSheet()	
+
+	def paintEvent(self, e):
+		painter = pq.QPainter()
+		pen = pq.QPen(pcq.black, 2, pcq.SolidLine)
+		painter.begin(self)
+		painter.setPen(pen)
+		#painter.drawLine(self.w-self.w/20,self.h-self.h/20,self.w-self.w/20,self.h-self.h*19/20)
+		painter.drawLine(39,0,39,self.h-29)
+		painter.drawLine(30,self.h-39,self.w-41,self.h-39)
+		painter.end()
 
 	def setSize(self):
 		desktop = pq.QDesktopWidget()
