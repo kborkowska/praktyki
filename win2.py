@@ -21,6 +21,7 @@ class GUI(pq.QWidget):
 		self.show()
 
 	def createGraph(self):
+		self.maxX = 10 #10 for debugging purposes
 		self.graph = pg.PlotWidget(self)
 		self.graph.plot(self.data)
 		self.graph.setGeometry(0,0,self.w-40,self.h)
@@ -64,6 +65,7 @@ class GUI(pq.QWidget):
 	
 	def updateGraph(self):
 		self.appendData(self.sender().value())
+		
 		self.graph.plot(self.data)
 
 	def createInitialData(self):
@@ -71,7 +73,10 @@ class GUI(pq.QWidget):
 		self.data = array([1,2,3,4,5])
 
 	def appendData(self, x):
-		self.data = append(self.data,x)
+		if self.data.size < self.maxX: 
+			self.data = append(self.data,x)
+		else:
+			self.data = append(self.data[1:self.maxX],x)
 		#print(self.data)
 
 if __name__ == "__main__":
