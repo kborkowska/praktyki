@@ -63,6 +63,7 @@ class GUI(pq.QWidget):
 		slider.setTickPosition(pq.QSlider.TicksLeft)
 		sw = 40
 		slider.setGeometry(self.w-sw,0,sw,self.h)
+		#slider.setStyleSheet()
 
 	def createInitialData(self):
 		global data
@@ -72,7 +73,11 @@ class GUI(pq.QWidget):
 		data = append(data,x)
 
 if __name__ == "__main__":
+	style = pq.QStyleFactory.create("motif")
+	pq.QApplication.setStyle(style)
 	app = pq.QApplication(sys.argv)
 	gui = GUI()
 	print("lol dziala")
 	sys.exit(app.exec_())
+
+
