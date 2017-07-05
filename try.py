@@ -1,19 +1,21 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 """
 ZetCode PyQt4 tutorial 
 
-In this example we draw 6 lines using
-different pen styles. 
+In this example, we connect a signal
+of a QtGui.QSlider to a slot 
+of a QtGui.QLCDNumber. 
 
 author: Jan Bodnar
 website: zetcode.com 
-last edited: September 2011
+last edited: October 2011
 """
 
 import sys
 from PyQt4 import QtGui, QtCore
+
 
 class Example(QtGui.QWidget):
     
@@ -22,47 +24,21 @@ class Example(QtGui.QWidget):
         
         self.initUI()
         
-    def initUI(self):      
-
-        self.setGeometry(300, 300, 280, 270)
-        self.setWindowTitle('Pen styles')
-        self.show()
-
-    def paintEvent(self, e):
-
-        qp = QtGui.QPainter()
-        qp.begin(self)
-        self.drawLines(qp)
-        qp.end()
+    def initUI(self):
         
-    def drawLines(self, qp):
-      
-        pen = QtGui.QPen(QtCore.Qt.black, 2, QtCore.Qt.SolidLine)
+        lcd = QtGui.QLCDNumber(self)
+        sld = QtGui.QSlider(QtCore.Qt.Horizontal, self)
 
-        qp.setPen(pen)
-        qp.drawLine(20, 40, 250, 40)
+        vbox = QtGui.QVBoxLayout()
+        vbox.addWidget(lcd)
+        vbox.addWidget(sld)
 
-        pen.setStyle(QtCore.Qt.DashLine)
-        qp.setPen(pen)
-        qp.drawLine(20, 80, 250, 80)
-
-        pen.setStyle(QtCore.Qt.DashDotLine)
-        qp.setPen(pen)
-        qp.drawLine(20, 120, 250, 120)
-
-        pen.setStyle(QtCore.Qt.DotLine)
-        qp.setPen(pen)
-        qp.drawLine(20, 160, 250, 160)
-
-        pen.setStyle(QtCore.Qt.DashDotDotLine)
-        qp.setPen(pen)
-        qp.drawLine(20, 200, 250, 200)
-
-        pen.setStyle(QtCore.Qt.CustomDashLine)
-        pen.setDashPattern([1, 4, 5, 4])
-        qp.setPen(pen)
-        qp.drawLine(20, 240, 250, 240)
-              
+        self.setLayout(vbox)
+        sld.valueChanged.connect(lcd.display)
+        
+        self.setGeometry(300, 300, 250, 150)
+        self.setWindowTitle('Signal & slot')
+        self.show()
         
 def main():
     

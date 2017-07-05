@@ -12,9 +12,6 @@ import sys
 
 class GUI(pq.QWidget):
 
-	w = 100
-	h = 100
-
 	def __init__(self):
 		super(GUI,self).__init__()
 		self.setSize()
@@ -24,10 +21,9 @@ class GUI(pq.QWidget):
 		self.show()
 
 	def createGraph(self):
-		global graph		
-		graph = pg.PlotWidget(self)
-		graph.plot(data)
-		graph.setGeometry(0,0,self.w-40,self.h)
+		self.graph = pg.PlotWidget(self)
+		self.graph.plot(self.data)
+		self.graph.setGeometry(0,0,self.w-40,self.h)
 
 	def setSize(self):
 		desktop = pq.QDesktopWidget()
@@ -63,14 +59,20 @@ class GUI(pq.QWidget):
 		slider.setTickPosition(pq.QSlider.TicksLeft)
 		sw = 40
 		slider.setGeometry(self.w-sw,0,sw,self.h)
+		slider.valueChanged.connect(self.updateGraph)
 		#slider.setStyleSheet()
+	
+	def updateGraph(self):
+		self.appendData(self.sender().value())
+		self.graph.plot(self.data)
 
 	def createInitialData(self):
-		global data
-		data = array([1,2,3,4,5])
+		#global data
+		self.data = array([1,2,3,4,5])
 
-	def appendData(x):
-		data = append(data,x)
+	def appendData(self, x):
+		self.data = append(self.data,x)
+		#print(self.data)
 
 if __name__ == "__main__":
 	style = pq.QStyleFactory.create("motif")
