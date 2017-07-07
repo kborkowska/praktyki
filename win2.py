@@ -3,27 +3,56 @@
 from PyQt4 import QtGui as pq
 from PyQt4 import QtCore as pc
 from PyQt4.QtCore import Qt as pcq
-
+from time import strftime
 from numpy import array, append
-
+import numpy as np
 import pyqtgraph as pg
 
 import sys
+
+class timeAxisItem(pg.AxisItem):
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		print("jestem tu i nic nie pokzauje bo mam Cie w poważaniu")
+		#super.setStyle(textFillLimits = [(2,0.3)])
+
+	def tickStrings(self, values, scale, spacing):
+		currTime = strftime("%H:%M:%S")
+		strings = []
+		
+		for i in values:
+			temp = len(values)-int(i)
+			strings.append(self.timeRevind(temp,currTime))
+		print(strings)
+		return strings
+
+	def timeRevind(self,initTime,currTime):
+		self.strings = []
+		secs = int(currTime[6:8])+int(currTime[3:5])*60+int(currTime[0:2])*3600
+		secs -= initTime
+		hurs = int(secs/3600)
+		secs -= hurs*3600
+		mins = int(secs/60)
+		secs -= mins*60
+		string = str(hurs)+":"+str(mins)+":"+str(secs)
+		return string
 
 class GUI(pq.QWidget):
 
 	def __init__(self):
 		super(GUI,self).__init__()
 		self.setSize()
-		self.createInitialData()
+		self.createInitialdata()
 		self.createSlider(1, 0, 10)
 		self.createGraph()
 		self.show()
 
 	def createGraph(self):
-		self.maxX = 10 #10 for debugging purposes
-		self.graph = pg.PlotWidget(self)
-		self.graph.plot(self.data)
+		self.maxX = 100 #10 for debugging purposes
+		self.graph = pg.PlotWidget(self,axisItems={'bottom': timeAxisItem(orientation='bottom')})
+		#aI = pg.AxisItem(orientation='bottom')
+		self.g = self.graph.plot(self.dataY)
 		self.graph.setGeometry(0,0,self.w-40,self.h)
 
 	def setSize(self):
@@ -64,20 +93,41 @@ class GUI(pq.QWidget):
 		#slider.setStyleSheet()
 	
 	def updateGraph(self):
-		self.appendData(self.sender().value())
-		
-		self.graph.plot(self.data)
+		self.appenddata(self.sender().value())
+		#self.graph.clear()
+		#self.graph.plot(self.dataY)
+		self.g.setData(self.dataY)
 
-	def createInitialData(self):
-		#global data
-		self.data = array([1,2,3,4,5])
+	def createInitialdata(self):
+		noOfFakeData = 5
+		self.dataX = self.createInitialTimeData(noOfFakeData)
+		self.dataY = np.zeros((noOfFakeData,), dtype=np.int)
 
-	def appendData(self, x):
-		if self.data.size < self.maxX: 
-			self.data = append(self.data,x)
+	def appenddata(self, x):
+		if self.dataY.size < self.maxX: 
+			self.dataY = append(self.dataY,x)
+			self.dataX = append(self.dataY,strftime("%H:%M:%S"))
 		else:
-			self.data = append(self.data[1:self.maxX],x)
-		#print(self.data)
+			self.dataY = append(self.dataY[1:self.maxX],x)
+			self.dataX = append(self.dataY[1:self.maxX],strftime("%H:%M:%S"))
+		#print(self.dataY)
+
+	def createInitialTimeData(self,initTime):
+		currTime = strftime("%H:%M:%S")
+		strings = []
+		for i in range(initTime-1,0,-1):
+			strings.append(self.timeRevind(i,currTime))
+		return strings
+
+	def timeRevind(self,offsetTime, currTime):
+		self.strings = []
+		secs = int(currTime[6:8])+int(currTime[3:5])*60+int(currTime[0:2])*3600
+		secs -= offsetTime
+		hurs = int(secs/3600)
+		secs -= hurs*3600
+		mins = int(secs/60)
+		secs -= mins*60
+		string = str(hurs)+":"+str(mins)+":"+str(secs)
 
 if __name__ == "__main__":
 	style = pq.QStyleFactory.create("motif")

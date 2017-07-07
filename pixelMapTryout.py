@@ -3,7 +3,7 @@
 from PyQt4 import QtGui as pq
 from PyQt4 import QtCore as pc
 from PyQt4.QtCore import Qt as pcq
-
+from time import strftime
 from numpy import array, append
 
 import pyqtgraph as pg
@@ -18,8 +18,16 @@ class GUI(pq.QWidget):
 	def __init__(self):
 		super(GUI,self).__init__()
 		self.setSize()
-		self.createPixelMap()
+		#self.createPixelMap()
 		self.createSlider(1, 0, 10)
+		painter = pq.QPainter()
+		pen = pq.QPen(pcq.black, 2, pcq.SolidLine)
+		painter.begin(self)
+		painter.setPen(pen)
+		#painter.drawLine(self.w-self.w/20,self.h-self.h/20,self.w-self.w/20,self.h-self.h*19/20)
+		painter.drawLine(39,0,39,self.h-29)
+		painter.drawLine(30,self.h-39,self.w-41,self.h-39)
+		painter.end()
 		self.show()
 
 	def createPixelMap(self):
@@ -44,17 +52,11 @@ class GUI(pq.QWidget):
 		slider.setTickPosition(pq.QSlider.TicksLeft)
 		sw = 40
 		slider.setGeometry(self.w-sw,0,sw,self.h)
-		#slider.setStyleSheet()	
+		#slider.valueChanged.connect(self.updateGraph)
+		#slider.setStyleSheet()
 
-	def paintEvent(self, e):
-		painter = pq.QPainter()
-		pen = pq.QPen(pcq.black, 2, pcq.SolidLine)
-		painter.begin(self)
-		painter.setPen(pen)
-		#painter.drawLine(self.w-self.w/20,self.h-self.h/20,self.w-self.w/20,self.h-self.h*19/20)
-		painter.drawLine(39,0,39,self.h-29)
-		painter.drawLine(30,self.h-39,self.w-41,self.h-39)
-		painter.end()
+	#def paintEvent(self, e):
+		
 
 	def setSize(self):
 		desktop = pq.QDesktopWidget()
