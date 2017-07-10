@@ -4,6 +4,7 @@ from PyQt4 import QtGui as pq
 from PyQt4 import QtCore as pc
 from PyQt4.QtCore import Qt as pcq
 from time import strftime
+from datetime import datetime as dt
 from numpy import array, append
 import numpy as np
 import pyqtgraph as pg
@@ -18,19 +19,23 @@ class timeAxisItem(pg.AxisItem):
 		#super.setStyle(textFillLimits = [(2,0.3)])
 
 	def tickStrings(self, values, scale, spacing):
-		currTime = strftime("%H:%M:%S")
 		strings = []
+		#print("values:")
+		#print(values)
 		for i in values:
-			strings.append(self.timeRevind(i))
+			strings.append(self.timeToString(i))
+		#print("strings:")
 		#print(strings)
 		return strings
 
-	def timeRevind(self,secs):
-		hurs = int(secs/3600)
-		secs -= hurs*3600
-		mins = int(secs/60)
-		secs -= mins*60
-		string = str(hurs)+":"+str(mins)+":"+str(int(secs))
+	def timeToString(self,milsecs):
+		hurs = int(milsecs/3600000)
+		milsecs -= hurs*3600000
+		mins = int(milsecs/60000)
+		milsecs -= mins*60000
+		secs = int(milsecs/1000)
+		milsecs -= secs*1000
+		string = str(hurs)+":"+str(mins)+":"+str(secs)+":"+str(int(milsecs))
 		return string
 
 class GUI(pq.QWidget):
@@ -43,28 +48,34 @@ class GUI(pq.QWidget):
 		self.createGraph()
 		self.show()
 
+	#def resizeEvent(self, event):
+		#self.slider.setGeometry(self.w-self.sw,0,self.sw,self.h)
+		#self.graph.setGeometry(0,0,self.w-self.sw,self.h)
+		#print("resize")
+
 	def createGraph(self):
 		self.maxX = 10 #10 for debugging purposes
 		self.graph = pg.PlotWidget(self,axisItems={'bottom': timeAxisItem(orientation='bottom')})
 		#aI = pg.AxisItem(orientation='bottom')
 		self.g = self.graph.plot(list(self.dataX),list(self.dataY))
-		self.graph.setGeometry(0,0,self.w-40,self.h)
+		self.graph.setGeometry(0,0,self.width()-self.sw,self.height())
 
 	def setSize(self):
 		desktop = pq.QDesktopWidget()
 		desktopGeometry = desktop.screenGeometry()
-		self.w = desktopGeometry.width()*2/5
-		self.h = desktopGeometry.height()*2/5
-		self.setGeometry(desktopGeometry.x(), desktopGeometry.y(), self.w, self.h)
+		self.sw = 40
+		w = desktopGeometry.width()*2/5
+		h = desktopGeometry.height()*2/5
+		self.setGeometry(desktopGeometry.x(), desktopGeometry.y(), w, h)
 
 	def setAndShowSize(self):
 		desktop = pq.QDesktopWidget()
 		desktopGeometry = desktop.screenGeometry()
-		self.w = desktopGeometry.width()*2/5
-		self.h = desktopGeometry.height()*2/5
+		w = desktopGeometry.width()*2/5
+		h = desktopGeometry.height()*2/5
 		#showSize used only for debugging purposes
 		self.showSize(desktopGeometry.x(), desktopGeometry.y(), desktopGeometry.width(), desktopGeometry.height(), "desktop", 20,20)
-		self.setGeometry(desktopGeometry.x(), desktopGeometry.y(), self.w, self.h)
+		self.setGeometry(desktopGeometry.x(), desktopGeometry.y(), w, h)
 		self.showSize(desktopGeometry.x(), desktopGeometry.y(), "app", 20,50)
 
 	#showSize used only for debugging purposes
@@ -76,15 +87,14 @@ class GUI(pq.QWidget):
 		geometryLabel.move(sx,sy)
 
 	def createSlider(self, tickInterval, minimum, maximum):
-		slider = pq.QSlider(pcq.Vertical,self)
-		slider.setTickInterval(tickInterval)
-		slider.setMinimum(minimum)
-		slider.setMaximum(maximum)
+		self.slider = pq.QSlider(pcq.Vertical,self)
+		self.slider.setTickInterval(tickInterval)
+		self.slider.setMinimum(minimum)
+		self.slider.setMaximum(maximum)
 		#slider.setTrackig(True)
-		slider.setTickPosition(pq.QSlider.TicksLeft)
-		sw = 40
-		slider.setGeometry(self.w-sw,0,sw,self.h)
-		slider.valueChanged.connect(self.updateGraph)
+		self.slider.setTickPosition(pq.QSlider.TicksLeft)
+		self.slider.setGeometry(self.width()-self.sw+self.geometry().x(),self.geometry().y(),self.sw,self.height())
+		self.slider.valueChanged.connect(self.updateGraph)
 		#slider.setStyleSheet()
 	
 	def updateGraph(self):
@@ -99,24 +109,34 @@ class GUI(pq.QWidget):
 		self.dataY = np.zeros((noOfFakeData,), dtype=np.int)
 
 	def appenddata(self, x):
-		currTime = strftime("%H:%M:%S.%f")
+		#currTime = strftime("%H:%M:%S.%f")
+		currTime = dt.now()
 		if self.dataY.size < self.maxX: 
 			self.dataY = append(self.dataY,x)
-			self.dataX = append(self.dataX,int(currTime[6:8])+int(currTime[3:5])*60+int(currTime[0:2])*3600)
+			#self.dataX = append(self.dataX,int(currTime[6:8])+int(currTime[3:5])*60+int(currTime[0:2])*3600)
+			self.dataX = append(self.dataX,(currTime.hour*3600+currTime.minute*60+currTime.second)*1000+int(currTime.microsecond/1000))
 		else:
 			self.dataY = append(self.dataY[1:self.maxX],x)
-			self.dataX = append(self.dataX[1:self.maxX],int(currTime[6:8])+int(currTime[3:5])*60+int(currTime[0:2])*3600)
+			#self.dataX = append(self.dataX[1:self.maxX],int(currTime[6:8])+int(currTime[3:5])*60+int(currTime[0:2])*3600)
+			self.dataX = append(self.dataX[1:self.maxX],(currTime.hour*3600+currTime.minute*60+currTime.second)*1000+int(currTime.microsecond/1000))
 		#print(self.dataY)
 
 	def createInitialTimeData(self,initTime):
-		currTime = strftime("%H:%M:%S.%f")
-		strings = []
+		#currTime = strftime("%H:%M:%S.%f")
+		currTime = dt.now()
+		times = []
 		for i in range(initTime-1,-1,-1):
-			strings.append(self.timeRevind(i,currTime))
-		return strings
+			times.append(self.timeRevind(i,currTime))
+		return times
 
 	def timeRevind(self,offsetTime, currTime):
-		self.strings = []
+		tim = currTime.hour*3600+currTime.minute*60+currTime.second
+		tim -= offsetTime
+		tim = tim*1000+int(currTime.microsecond/1000)
+		return tim
+
+	def timeRevindFromString(self,offsetTime, currTime):
+		#self.strings = []
 		secs = int(currTime[6:8])+int(currTime[3:5])*60+int(currTime[0:2])*3600
 		secs -= offsetTime
 		return secs
