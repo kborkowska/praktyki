@@ -20,22 +20,17 @@ class timeAxisItem(pg.AxisItem):
 	def tickStrings(self, values, scale, spacing):
 		currTime = strftime("%H:%M:%S")
 		strings = []
-		
 		for i in values:
-			temp = len(values)-int(i)
-			strings.append(self.timeRevind(temp,currTime))
-		print(strings)
+			strings.append(self.timeRevind(i))
+		#print(strings)
 		return strings
 
-	def timeRevind(self,initTime,currTime):
-		self.strings = []
-		secs = int(currTime[6:8])+int(currTime[3:5])*60+int(currTime[0:2])*3600
-		secs -= initTime
+	def timeRevind(self,secs):
 		hurs = int(secs/3600)
 		secs -= hurs*3600
 		mins = int(secs/60)
 		secs -= mins*60
-		string = str(hurs)+":"+str(mins)+":"+str(secs)
+		string = str(hurs)+":"+str(mins)+":"+str(int(secs))
 		return string
 
 class GUI(pq.QWidget):
@@ -49,10 +44,10 @@ class GUI(pq.QWidget):
 		self.show()
 
 	def createGraph(self):
-		self.maxX = 100 #10 for debugging purposes
+		self.maxX = 10 #10 for debugging purposes
 		self.graph = pg.PlotWidget(self,axisItems={'bottom': timeAxisItem(orientation='bottom')})
 		#aI = pg.AxisItem(orientation='bottom')
-		self.g = self.graph.plot(self.dataY)
+		self.g = self.graph.plot(list(self.dataX),list(self.dataY))
 		self.graph.setGeometry(0,0,self.w-40,self.h)
 
 	def setSize(self):
@@ -96,7 +91,7 @@ class GUI(pq.QWidget):
 		self.appenddata(self.sender().value())
 		#self.graph.clear()
 		#self.graph.plot(self.dataY)
-		self.g.setData(self.dataY)
+		self.g.setData(list(self.dataX),list(self.dataY))
 
 	def createInitialdata(self):
 		noOfFakeData = 5
@@ -104,18 +99,19 @@ class GUI(pq.QWidget):
 		self.dataY = np.zeros((noOfFakeData,), dtype=np.int)
 
 	def appenddata(self, x):
+		currTime = strftime("%H:%M:%S.%f")
 		if self.dataY.size < self.maxX: 
 			self.dataY = append(self.dataY,x)
-			self.dataX = append(self.dataY,strftime("%H:%M:%S"))
+			self.dataX = append(self.dataX,int(currTime[6:8])+int(currTime[3:5])*60+int(currTime[0:2])*3600)
 		else:
 			self.dataY = append(self.dataY[1:self.maxX],x)
-			self.dataX = append(self.dataY[1:self.maxX],strftime("%H:%M:%S"))
+			self.dataX = append(self.dataX[1:self.maxX],int(currTime[6:8])+int(currTime[3:5])*60+int(currTime[0:2])*3600)
 		#print(self.dataY)
 
 	def createInitialTimeData(self,initTime):
-		currTime = strftime("%H:%M:%S")
+		currTime = strftime("%H:%M:%S.%f")
 		strings = []
-		for i in range(initTime-1,0,-1):
+		for i in range(initTime-1,-1,-1):
 			strings.append(self.timeRevind(i,currTime))
 		return strings
 
@@ -123,18 +119,14 @@ class GUI(pq.QWidget):
 		self.strings = []
 		secs = int(currTime[6:8])+int(currTime[3:5])*60+int(currTime[0:2])*3600
 		secs -= offsetTime
-		hurs = int(secs/3600)
-		secs -= hurs*3600
-		mins = int(secs/60)
-		secs -= mins*60
-		string = str(hurs)+":"+str(mins)+":"+str(secs)
+		return secs
+		
 
 if __name__ == "__main__":
 	style = pq.QStyleFactory.create("motif")
 	pq.QApplication.setStyle(style)
 	app = pq.QApplication(sys.argv)
 	gui = GUI()
-	print("lol dziala")
 	sys.exit(app.exec_())
 
 
