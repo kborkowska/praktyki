@@ -14,7 +14,7 @@ class timeAxisItem(pg.AxisItem):
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		print("jestem tu i nic nie pokzauje bo mam Cie w poważaniu")
+		#print("jestem tu i nic nie pokzauje bo mam Cie w poważaniu")
 		#super.setStyle(textFillLimits = [(2,0.3)])
 
 	def tickStrings(self, values, scale, spacing):
@@ -127,6 +127,8 @@ if __name__ == "__main__":
 	pq.QApplication.setStyle(style)
 	app = pq.QApplication(sys.argv)
 	gui = GUI()
-	sys.exit(app.exec_())
+	app.exec_()
+	del gui
+	sys.exit()
 
 
