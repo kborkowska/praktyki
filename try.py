@@ -24,7 +24,7 @@ Wesja różowa.
 
 '''
 
-class RepeatedTimer():
+class RepeatedTimer(object):
 
 	def __init__(self, interval, function, *args, **kwargs):
 		self._timer     = None
@@ -54,14 +54,16 @@ def prT():
         print('lol')
 
 if __name__ == "__main__":
-        sys.settrace
-        style = pq.QStyleFactory.create("motif")
-        pq.QApplication.setStyle(style)
-        app = pq.QApplication(sys.argv)
-        win = pq.QWidget()
-        win.setGeometry(100,100,500,500)
-        timer = RepeatedTimer(0.1, prT)
-        win.show()
-        timer.stop()
-        sys.exit(app.exec_())
+	sys.settrace
+	style = pq.QStyleFactory.create("motif")
+	pq.QApplication.setStyle(style)
+	app = pq.QApplication(sys.argv)
+	print('lol')
+	win = pq.QWidget()
+	win.setGeometry(100,100,500,500)
+	timer = RepeatedTimer(0.1, prT)
+	win.show()
+	app.exec_()
+	timer.stop()
+	sys.exit()
 
