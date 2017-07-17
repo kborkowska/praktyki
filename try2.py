@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from PyQt4 import QtGui as pq
 from PyQt4 import QtCore as pc
@@ -20,11 +20,11 @@ import sys
 '''
 
 Prototyp GUI do oprogramowania panelu operatorskiego do zadawania
-i odbierania sygnałów układów przeksztaltnikowych.
+i odbierania sygnalow ukladow przeksztaltnikowych.
 
-Wesja do wprowadzania zmian i nowych funkcjonalności.
+Wesja do wprowadzania zmian i nowych funkcjonalnosci.
 
-Wesja różowa.
+Wesja rozowa.
 
 '''
 
@@ -58,7 +58,7 @@ class RepeatedTimer():
 class TimeAxisItem(pg.AxisItem):
 
 	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
+		super(TimeAxisItem,self).__init__(*args, **kwargs)
 
 	def tickStrings(self, values, scale, spacing):
 		strings = []
@@ -87,23 +87,21 @@ class GUI(pq.QWidget):
 
 		self.insidePane = pq.QWidget(self)
 
-		self.layout = pq.QGridLayout()
-		self.insideLayout = pq.QHBoxLayout()
+		layout = pq.QGridLayout()
+		insideLayout = pq.QHBoxLayout()
 
-		self.insidePane.setLayout(self.insideLayout)
+		self.insidePane.setLayout(insideLayout)
+		self.setLayout(layout)
 
 		self.maxX = 100
-		self.createInitialdata()
+		#self.createInitialdata()
 
 		self.createGraph()
 		self.createSlider(1, 0, 10)
 		self.createLabeledInputBoxes(self.insidePane)
 
-		self.layout.addWidget(self.graph, 1, 1)
-		self.layout.addWidget(self.slider, 1 , 2)
-		self.layout.addWidget(self.insidePane, 2 , 1)
-
-		self.setLayout(self.layout)
+		layout.addWidget(self.slider, 1 , 2)
+		layout.addWidget(self.insidePane, 2 , 1)		
 
 		self.openDataFile()
 
@@ -111,8 +109,9 @@ class GUI(pq.QWidget):
 
 
 
-	def __del__(self):
+	def finish(self):
 		self.closeDataFile()
+		print('siolololo mam Cie w dupie')
 
 	
 	def closeDataFile(self):
@@ -134,8 +133,8 @@ class GUI(pq.QWidget):
 
 		self.secondLine = pq.QLineEdit(parent)
 		secondLabel = pq.QLabel("second:",parent)
-		self.insideLayout.addWidget(secondLabel)
-		self.insideLayout.addWidget(self.secondLine)
+		parent.layout().addWidget(secondLabel)
+		parent.layout().addWidget(self.secondLine)
 		#self.secondLine.resize((self.width()-self.sliderWidth)*0.4,self.height()*0.15)
 
 
@@ -149,16 +148,18 @@ class GUI(pq.QWidget):
 
 
 	def createGraph(self):
-		self.graph = pg.PlotWidget(self, background =(217,217,222,255),\
+		graph = pg.PlotWidget(self, background =(217,217,222,255),\
 					axisItems={'bottom': TimeAxisItem(orientation='bottom',\
-					                     pen=pg.mkPen(color = (255,9,215,255),\
-							     width=2)),\
+                                                        pen=pg.mkPen(color = (255,9,215,255),\
+                                                        width=2)),\
 					    	    'left': pg.AxisItem(orientation='left',\
-					    		    pen=pg.mkPen(color = (255,9,215,255),\
-							    width=2))})
-		self.g = self.graph.plot(list(self.dataX),list(self.dataY),\
+                                                        pen=pg.mkPen(color = (255,9,215,255),\
+                                                        width=2))})
+		dataX,dataY = self.createInitialdata()
+		self.g = graph.plot(dataX,dataY,\
 				pen=pg.mkPen(color = (255,9,215,255),width=3.5))
-		self.graph.resize(self.width()-self.sliderWidth,self.height()-self.height()*0.15)
+		graph.resize(self.width()-self.sliderWidth,self.height()-self.height()*0.15)
+		self.layout().addWidget(graph, 1, 1)
 
 
 
@@ -171,45 +172,50 @@ class GUI(pq.QWidget):
 
 		self.slider.setTickPosition(pq.QSlider.TicksLeft)
 
-		self.slider.valueChanged.connect(self.updateGraph)
+		#self.slider.valueChanged.connect(self.updateGraph)
 
 		self.slider.resize(self.sliderWidth,self.height()-self.height()*0.15)
 	
 
 
 	def updateGraph(self):
-		self.appendData(self.sender().value())
-		self.g.setData(list(self.dataX),list(self.dataY))
+		dataX,dataY = self.appendData(self.sender().value())
+		self.g.setData(dataX,dataY)
 	
 
 
 	def updateGraphExternally(self):
-		self.appendData()
-		self.g.setData(list(self.dataX),list(self.dataY))
+		dataX,dataY = self.appendData()
+		self.g.setData(dataX,dataY)
 
 
 
 	def createInitialdata(self):
-		self.dataX = self.createInitialTimeData(self.maxX)
-		self.dataY = np.zeros((self.maxX,), dtype=np.int)
+		dataX = self.createInitialTimeData(self.maxX)
+		dataY = np.zeros((self.maxX,), dtype=np.int)
+		return list(dataX),list(dataY)
 
 
 
 	def appendData(self, y):
 		currTime = dt.now()
 
-		if self.dataY.size < self.maxX: 
-			self.dataY = append(self.dataY,y)
-			self.dataX = append(self.dataX,(currTime.hour*3600+\
-						currTime.minute*60+currTime.second)*1000+\
-						int(currTime.microsecond/1000))
+		dataX,dataY = self.g.getData()
+
+		if dataY.size < self.maxX: 
+			dataY = append(dataY,y)
+			dataX = append(dataX,(currTime.hour*3600+\
+					currTime.minute*60+currTime.second)*1000+\
+					int(currTime.microsecond/1000))
 		else:
-			self.dataY = append(self.dataY[1:self.maxX],y)
-			self.dataX = append(self.dataX[1:self.maxX],(currTime.hour*3600+\
-						currTime.minute*60+currTime.second)*1000+\
-						int(currTime.microsecond/1000))
+			dataY = append(dataY[1:self.maxX],y)
+			dataX = append(dataX[1:self.maxX],(currTime.hour*3600+\
+					currTime.minute*60+currTime.second)*1000+\
+					int(currTime.microsecond/1000))
 
 		self.saveData(currTime, y)
+
+		return list(dataX),list(dataY)
 
 
 
@@ -217,18 +223,22 @@ class GUI(pq.QWidget):
 		currTime = dt.now()
 		y=randint(0,100)
 
-		if self.dataY.size < self.maxX: 
-			self.dataY = append(self.dataY,y)
-			self.dataX = append(self.dataX,(currTime.hour*3600+\
-						currTime.minute*60+currTime.second)*1000+\
-						int(currTime.microsecond/1000))
+		dataX,dataY = self.g.getData()
+
+		if dataY.size < self.maxX: 
+			dataY = append(dataY,y)
+			dataX = append(dataX,(currTime.hour*3600+\
+					currTime.minute*60+currTime.second)*1000+\
+					int(currTime.microsecond/1000))
 		else:
-			self.dataY = append(self.dataY[1:self.maxX],y)
-			self.dataX = append(self.dataX[1:self.maxX],(currTime.hour*3600+\
-						currTime.minute*60+currTime.second)*1000+\
-						int(currTime.microsecond/1000))
+			dataY = append(dataY[1:self.maxX],y)
+			dataX = append(dataX[1:self.maxX],(currTime.hour*3600+\
+                                        currTime.minute*60+currTime.second)*1000+\
+					int(currTime.microsecond/1000))
 
 		self.saveData(currTime, y)
+
+		return list(dataX),list(dataY)
 
 
 
@@ -261,16 +271,20 @@ class GUI(pq.QWidget):
 		secs -= offsetTime
 		return secs
 		
-
+def prT():
+        print(' ')
 
 if __name__ == "__main__":
+	sys.settrace
 	style = pq.QStyleFactory.create("motif")
 	pq.QApplication.setStyle(style)
 	app = pq.QApplication(sys.argv)
 	gui = GUI()
 	timer = RepeatedTimer(0.1, gui.updateGraphExternally)
+	#timer = RepeatedTimer(0.1,prT)
 	app.exec_()
+	gui.finish()
 	timer.stop()
-	del gui
+	#del gui
 	sys.exit()
 

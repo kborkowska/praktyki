@@ -11,6 +11,8 @@ from datetime import datetime as dt
 from numpy import array, append
 import numpy as np
 
+import pyqtgraph as pg
+
 import sys
 
 '''
@@ -50,20 +52,71 @@ class RepeatedTimer(object):
 		self._timer.cancel()
 		self.is_running = False
 
+
+class GUI(pq.QWidget):
+
+        def __init__(self):
+                super(GUI,self).__init__()
+
+                self.setSize()
+
+                self.layout = pq.QHBoxLayout()
+
+                self.maxX = 100
+                self.createInitialdata()
+                self.createGraph()
+
+                self.setLayout(self.layout)
+
+                self.show()
+
+        def __del__(self):
+                del self.g
+                del self.graph
+
+        def setSize(self):
+                self.sw = 40
+
+                desktopGeometry = pq.QDesktopWidget().screenGeometry()
+                self.setGeometry(desktopGeometry.x(), desktopGeometry.y(),\
+				desktopGeometry.width()*2/5, desktopGeometry.height()*2/5)
+        def createInitialTimeData(self,initTime):
+                currTime = dt.now()
+                times = []
+
+                for i in range(initTime-1,-1,-1):
+                        times.append(self.timeRevind(i,currTime))
+                return times
+
+        def timeRevind(self,offsetTime, currTime):
+                tim = currTime.hour*3600+currTime.minute*60+currTime.second
+                tim -= offsetTime
+                tim = tim*1000+int(currTime.microsecond/1000)
+                return tim
+
+        def createInitialdata(self):
+                self.dataX = self.createInitialTimeData(self.maxX)
+                self.dataY = np.zeros((self.maxX,), dtype=np.int)
+
+        def createGraph(self):
+                self.graph = pg.PlotWidget(self, background =(217,217,222,255))
+                self.g = self.graph.plot(list(self.dataX),list(self.dataY),\
+				pen=pg.mkPen(color = (255,9,215,255),width=3.5))
+                self.graph.resize(self.width()-self.sw,self.height())
+
+
 def prT():
-        print('lol')
+        print(' ')
 
 if __name__ == "__main__":
 	sys.settrace
 	style = pq.QStyleFactory.create("motif")
 	pq.QApplication.setStyle(style)
 	app = pq.QApplication(sys.argv)
-	print('lol')
-	win = pq.QWidget()
-	win.setGeometry(100,100,500,500)
+	gui = GUI()
 	timer = RepeatedTimer(0.1, prT)
-	win.show()
 	app.exec_()
+	del gui
 	timer.stop()
 	sys.exit()
 

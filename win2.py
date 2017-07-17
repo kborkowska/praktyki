@@ -70,6 +70,9 @@ class GUI(pq.QWidget):
 
 		self.show()
 
+	def __del__(self):
+		del self.g
+		del self.graph
 
 	def setSize(self):
 		self.sw = 40
@@ -169,6 +172,5 @@ if __name__ == "__main__":
 	app = pq.QApplication(sys.argv)
 	gui = GUI()
 	app.exec_()
-	del gui
 	sys.exit()
 
