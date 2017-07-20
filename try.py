@@ -116,7 +116,6 @@ if __name__ == "__main__":
 	gui = GUI()
 	timer = RepeatedTimer(0.1, prT)
 	app.exec_()
-	del gui
 	timer.stop()
 	sys.exit()
 
