@@ -24,11 +24,32 @@ class View(pq.QWidget):
 
         self.show()
 
+    '''def paintEvent(self, e):
+
+        qp = pq.QPainter()
+        qp.begin(self)
+        self.drawLines(qp)
+        qp.end()
+
+    def drawLines(self, qp):
+        pen = pq.QPen(pc.Qt.gray,2,pc.Qt.SolidLine)
+
+        pen.setStyle(pc.Qt.DotLine)
+        qp.setPen(pen)
+        qp.drawLine(20,200,250,200)'''
 
     def createMainView(self):
         self.setLayout(pq.QHBoxLayout())
 
         self.chosenModule = 1
+        
+        self.chosenModuleColor = 'rgb(204,253,139)'
+        self.workingModuleColor = 'rgb(233,255,202)'
+        self.shutoffModuleColor = 'rgb(233,255,202)'
+        self.alarmModuleColor = 'rgb(252,77,42)'
+
+        self.onBtnColor = 'rgb(136,255,67)'
+        self.offBtnColor = 'rgb(192,196,198)'
 
         self.secondaryLayouts = self.createInsideLayouts(self, grid = True,\
                                                          gridIdx = 1)
@@ -40,15 +61,15 @@ class View(pq.QWidget):
     def createModuleTabs(self,pane):
         numberOfModules = self.controler().getNumberOfModules()
         for i in range(numberOfModules):
-            moduleTabBtn = pq.QPushButton('Modol '+str(i+1))
+            moduleTabBtn = pq.QPushButton('Modul '+str(i+1))
             if i == self.chosenModule-1:
                 moduleTabBtn.setStyleSheet('background-color:'+\
-                                                'rgb(204,253,139)')
+                                                self.chosenModuleColor)
             else:
                 moduleTabBtn.setStyleSheet('background-color:'+\
-                                                 'rgb(233,255,202)')
+                                                self.workingModuleColor)
             moduleTabBtn.setFlat(True)
-            moduleTabBtn.setObjectName('Modol_'+str(i+1)+'_Btn')
+            moduleTabBtn.setObjectName('Modul_'+str(i+1)+'_Btn')
             moduleTabBtn.clicked.connect(self.changeModuleTab)
             pane().addWidget(moduleTabBtn)
 
@@ -59,11 +80,13 @@ class View(pq.QWidget):
 
         if self.chosenModule != senderNumber:
             self.findChild(pq.QPushButton,\
-                           'Modol_'+str(self.chosenModule)+'_Btn').\
-                        setStyleSheet('background-color:rgb(233,255,202)')
+                           'Modul_'+str(self.chosenModule)+'_Btn').\
+                        setStyleSheet('background-color:'+\
+                                      self.chosenModuleColor)
             self.findChild(pq.QPushButton,\
-                           'Modol_'+str(senderNumber)+'_Btn').\
-                        setStyleSheet('background-color:rgb(204,253,139)')
+                           'Modul_'+str(senderNumber)+'_Btn').\
+                        setStyleSheet('background-color:'+\
+                                      self.chosenModuleColor)
             self.changeModulePanelInfo(senderNumber)
             self.chosenModule = senderNumber
     
@@ -76,7 +99,7 @@ class View(pq.QWidget):
         
 
     def createModulePanel(self, pane): 
-        label = pq.QLabel('Modol nr. '+str(self.chosenModule))
+        label = pq.QLabel('Modul nr. '+str(self.chosenModule))
         label.setObjectName('chosenModelLabel')
         pane().addWidget(label,1,1)
 
@@ -198,10 +221,15 @@ class View(pq.QWidget):
             for i in range(numberOfPanes):
                 if not i in gridIdx:
                     newLayout = pq.QVBoxLayout()
+                    parent.layout().insertLayout(i,newLayout)
                 else:
                     newLayout = pq.QGridLayout()
+                    colorWidget = pq.QWidget()
+                    parent.layout().insertWidget(i,colorWidget)
+                    colorWidget.setStyleSheet(\
+                        'background-color:rgb(238,246,235)')
+                    colorWidget.setLayout(newLayout)
                 newLayouts.append(ref(newLayout))
-                parent.layout().insertLayout(i,newLayout)
 
         return newLayouts
 
@@ -251,24 +279,95 @@ class View(pq.QWidget):
 class Model():
 
     def __init__(self):
+
+        self.numberOfModules = 4
+        
+        self.initMessages()
+        
         self.configureModules()
 
+    def initMessages(self):
+        
+
+    def createListOfModuleProperties(self):
+        # creates list of string containig names of properties of any
+        # given module to be displayed and/or changed via gui
+
+        # position of a property name in this list determines where
+        # it will be stored in arrays dedicated specyfic modules
+
+        # if the row has more than one string entry, the first one 
+        # is group name, while others represent individual values
+
+        self.modulePropertyList = array([['pwrState'],\
+
+                                       ['Wejście','U<sub>in</sub>',\
+                                        'I<sub>in</sub>','P<sub>in</sub>'],\
+
+                                       ['Wyjście','U<sub>out</sub>',\
+                                        'I<sub>out</sub>','P<sub>out</sub>'],\
+
+                                       ['Temperatura','Temp1','Temp2','Temp3'],\
+
+                                       ['Zadane','U','I'],\
+
+                                       ['Tryb pracy'],\
+
+                                       ['Awarie']])
+
+    def getListOfModuleProperties(self):
+        try:
+            return self.moduleProprtyList
+        except NameError:
+            self.createListOfModuleProperties()
+            return self.moduleProprtyList
+
+    def getIndexOfAProperty(self,propertyName):
+        #returns position of a proprty in a property value table
+
+        try:
+            self.modulePropertyList
+        except NameError:
+            self.createListOfModuleProperties()
+
+        numberOfRows = self.modulePropertyList.shape[0]
+
+        index = -1
+
+        for i in range(numberOfRows):
+            l = len(self.modulePropertyList[i])
+            if l > 1:
+                for j in range(1,l):
+                    index += 1
+                    if self.modulePropertyList[i][j] == propertyName:
+                        return index
+            else:
+                index += 1
+                if self.modulePropertyList[i] == propertyName:
+                        return index
+
     def configureModules(self):
-        self.numberOfModules = 4
+        self.
 
     def getNumberOfModules(self):
         return self.numberOfModules
+
+    def getPwrStateOfModule(self, moduleNumber):
+        try:
+            return self.moduleState[moduleNumber-1][self.pwrStateIndex]
+        except IndexError:
+            print('In Model.getStateOfModule: wrong module number')
     
-    def turnOffModulePwrMsg(self,chosenModule):
+    def turnOffModulePwr(self,chosenModule):
         self.sendOffModulePwrMsg(chosenModule)
 
-    def turnOnModulePwrMsg(self,chosenModule):
+    def turnOnModulePwr(self,chosenModule):
         self.sendOnModulePwrMsg(chosenModule)
 
-    def turnOffMainPwrMsg(self):
+    def turnOffMainPwr(self):
         self.sendOffMainPwrMsg()
 
-    def turnOnMainPwrMsg(self):
+    def turnOnMainPwr(self):
         self.sendOnMainPwrMsg()
 
     def sendOffModulePwrMsg(self,chosenModule):
@@ -302,17 +401,17 @@ class Controler():
 
     def toggleModulePower(self, toggleString, chosenModule):
         if toggleString is 'On':
-            self.model.turnOnModulePwrMsg(chosenModule)
+            self.model.turnOnModulePwr(chosenModule)
         elif toggleString is 'Off':
-            self.model.turnOffModulePwrMsg(chosenModule)
+            self.model.turnOffModulePwr(chosenModule)
         else:
             print('error in controler.toggleMainPower wrong toggleString')
 
     def toggleMainPower(self, toggleString):
         if toggleString is 'On':
-            self.model.turnOnMainPwrMsg()
+            self.model.turnOnMainPwr()
         elif toggleString is 'Off':
-            self.model.turnOffMainPwrMsg()
+            self.model.turnOffMainPwr()
         else:
             print('error in controler.toggleMainPower wrong toggleString')
 

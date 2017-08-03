@@ -1,0 +1,11 @@
+#in order to change messages 
+
+#lines started with '#' will be omitted
+
+MEMBER: pwrState
+MEMBER_MESSAGES: on_msg
+
+GROUP:
+GROUP_NAME: Wejście
+GROUP_MEMBERS: U<sub>in</sub> I<sub>in</sub> P<sub>in</sub>
+

@@ -1,121 +1,70 @@
 #!/usr/bin/env python3
 
-from PyQt4 import QtGui as pq
-from PyQt4 import QtCore as pc
-from PyQt4.QtCore import Qt as pcq
+from numpy import array
 
-from threading import Timer
+class lol:
 
-from datetime import datetime as dt
+    def __init__(self):
+            self.createListOfModuleProperties()
 
-from numpy import array, append
-import numpy as np
+    def createListOfModuleProperties(self):
+        # creates list of string containig names of properties of any
+        # given module to be displayed and/or changed via gui
 
-import pyqtgraph as pg
+        # position of a property name in this list determines where
+        # it will be stored in arrays dedicated specyfic modules
 
-import sys
+        # if the row has more than one string entry, the first one 
+        # is group name, while others represent individual values
 
-'''
+        self.modulePropertyList = array([['pwrState'],\
 
-Prototyp GUI do oprogramowania panelu operatorskiego do zadawania
-i odbierania sygnałów układów przeksztaltnikowych.
+                                       ['Wejście','U<sub>in</sub>',\
+                                        'I<sub>in</sub>','P<sub>in</sub>'],\
 
-Wesja do wprowadzania zmian i nowych funkcjonalności.
+                                       ['Wyjście','U<sub>out</sub>',\
+                                        'I<sub>out</sub>','P<sub>out</sub>'],\
 
-Wesja różowa.
+                                       ['Temperatura','Temp1','Temp2','Temp3'],\
 
-'''
+                                       ['Zadane','U','I'],\
 
-class RepeatedTimer(object):
+                                       ['Tryb pracy'],\
 
-	def __init__(self, interval, function, *args, **kwargs):
-		self._timer     = None
-		self.interval   = interval
-		self.function   = function
-		self.args       = args
-		self.kwargs     = kwargs
-		self.is_running = False
-		self.start()
+                                       ['Awarie']])
 
-	def _run(self):
-		self.is_running = False
-		self.start()
-		self.function(*self.args, **self.kwargs)
+    def getListOfModuleProperties(self):
+        try:
+            return self.moduleProprtyList
+        except NameError:
+            self.createListOfModuleProperties()
+            return self.moduleProprtyList
 
-	def start(self):
-		if not self.is_running:
-			self._timer = Timer(self.interval, self._run)
-			self._timer.start()
-			self.is_running = True
+    def getIndexOfAProperty(self,propertyName):
+        #returns position of a proprty in a property value table
 
-	def stop(self):
-		self._timer.cancel()
-		self.is_running = False
+        try:
+            self.modulePropertyList
+        except NameError:
+            self.createListOfModuleProperties()
 
+        numberOfRows = self.modulePropertyList.shape[0]
 
-class GUI(pq.QWidget):
+        index = -1
 
-        def __init__(self):
-                super(GUI,self).__init__()
-
-                self.setSize()
-
-                self.layout = pq.QHBoxLayout()
-
-                self.maxX = 100
-                self.createInitialdata()
-                self.createGraph()
-
-                self.setLayout(self.layout)
-
-                self.show()
-
-        def __del__(self):
-                del self.g
-                del self.graph
-
-        def setSize(self):
-                self.sw = 40
-
-                desktopGeometry = pq.QDesktopWidget().screenGeometry()
-                self.setGeometry(desktopGeometry.x(), desktopGeometry.y(),\
-				desktopGeometry.width()*2/5, desktopGeometry.height()*2/5)
-        def createInitialTimeData(self,initTime):
-                currTime = dt.now()
-                times = []
-
-                for i in range(initTime-1,-1,-1):
-                        times.append(self.timeRevind(i,currTime))
-                return times
-
-        def timeRevind(self,offsetTime, currTime):
-                tim = currTime.hour*3600+currTime.minute*60+currTime.second
-                tim -= offsetTime
-                tim = tim*1000+int(currTime.microsecond/1000)
-                return tim
-
-        def createInitialdata(self):
-                self.dataX = self.createInitialTimeData(self.maxX)
-                self.dataY = np.zeros((self.maxX,), dtype=np.int)
-
-        def createGraph(self):
-                self.graph = pg.PlotWidget(self, background =(217,217,222,255))
-                self.g = self.graph.plot(list(self.dataX),list(self.dataY),\
-				pen=pg.mkPen(color = (255,9,215,255),width=3.5))
-                self.graph.resize(self.width()-self.sw,self.height())
-
-
-def prT():
-        print(' ')
+        for i in range(numberOfRows):
+            l = len(self.modulePropertyList[i])
+            if l > 1:
+                for j in range(1,l):
+                    index += 1
+                    if self.modulePropertyList[i][j] == propertyName:
+                        return index
+            else:
+                index += 1
+                if self.modulePropertyList[i] == propertyName:
+                        return index
 
 if __name__ == "__main__":
-	sys.settrace
-	style = pq.QStyleFactory.create("motif")
-	pq.QApplication.setStyle(style)
-	app = pq.QApplication(sys.argv)
-	gui = GUI()
-	timer = RepeatedTimer(0.1, prT)
-	app.exec_()
-	timer.stop()
-	sys.exit()
+    lol = lol()
+    print(lol.getIndexOfAProperty('Temp1'))
 
