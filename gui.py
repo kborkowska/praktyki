@@ -279,108 +279,161 @@ class View(pq.QWidget):
 class Model():
 
     def __init__(self):
+        self.initConfigFileAnalysators()
 
-        self.numberOfModules = 4
-        
-        self.initMessages()
-        
-        self.configureModules()
 
-    def initMessages(self):
+    def initConfigFileAnalysators(self):
         
 
-    def createListOfModuleProperties(self):
-        # creates list of string containig names of properties of any
-        # given module to be displayed and/or changed via gui
-
-        # position of a property name in this list determines where
-        # it will be stored in arrays dedicated specyfic modules
-
-        # if the row has more than one string entry, the first one 
-        # is group name, while others represent individual values
-
-        self.modulePropertyList = array([['pwrState'],\
-
-                                       ['Wejście','U<sub>in</sub>',\
-                                        'I<sub>in</sub>','P<sub>in</sub>'],\
-
-                                       ['Wyjście','U<sub>out</sub>',\
-                                        'I<sub>out</sub>','P<sub>out</sub>'],\
-
-                                       ['Temperatura','Temp1','Temp2','Temp3'],\
-
-                                       ['Zadane','U','I'],\
-
-                                       ['Tryb pracy'],\
-
-                                       ['Awarie']])
-
-    def getListOfModuleProperties(self):
+    def configureAccordingToConfigFile:
         try:
-            return self.moduleProprtyList
+            with open(can_prog_config.txt) as configFile:
+                line = cf.readline()
+                line = line.strip()
+                while line != 'END_CONFIG':
+                    if line[0] != '#' or line != '':
+                        self.createClass[line]()
+                    line = cf.readline()
+                    line = line.strip()
+                        
+
         except NameError:
-            self.createListOfModuleProperties()
-            return self.moduleProprtyList
+            print('NameError: Config file (can_prog_config.txt) not found')
+            sys.exit()
+        
+class Member():
+    def __init__(self, memberType, memberName):
+        self.memberType = memberType
 
-    def getIndexOfAProperty(self,propertyName):
-        #returns position of a proprty in a property value table
+        self.memberName = memberName
 
+
+class ToggleMember(Member):
+    def __init__(self, memeberType, memberName)):
+        Member.__init__(memberType, memberName))
+
+    def setOnMsg(self,msg):
+        self.onMsg = msg
+
+    def setOffMsg(self,msg):
+        self.offMsg = msg
+
+    def setOnText(self,text):
+        self.onText = text
+
+    def setOffText(self,text):
+        self.offText = text
+
+    def getOnMsg(self):
         try:
-            self.modulePropertyList
+            return self.onMsg
         except NameError:
-            self.createListOfModuleProperties()
+            print('In ToggleMember: \n \
+                  \t Asked for on message but none has been declared')
 
-        numberOfRows = self.modulePropertyList.shape[0]
-
-        index = -1
-
-        for i in range(numberOfRows):
-            l = len(self.modulePropertyList[i])
-            if l > 1:
-                for j in range(1,l):
-                    index += 1
-                    if self.modulePropertyList[i][j] == propertyName:
-                        return index
-            else:
-                index += 1
-                if self.modulePropertyList[i] == propertyName:
-                        return index
-
-    def configureModules(self):
-        self.
-
-    def getNumberOfModules(self):
-        return self.numberOfModules
-
-    def getPwrStateOfModule(self, moduleNumber):
+    def getOffMsg(self):
         try:
-            return self.moduleState[moduleNumber-1][self.pwrStateIndex]
-        except IndexError:
-            print('In Model.getStateOfModule: wrong module number')
+            return self.offMsg
+        except NameError:
+            print('In ToggleMember: \n \
+                  \t Asked for off message but none has been declared')
+
+    def getOnText(self);
+        try:
+            return self.onText
+        except NameError:
+            print('In ToggleMember: \n \
+                  \t Asked for on text but none has been declared')
+
+    def getOffText(self):
+        try:
+            return self.offText
+        except NameError:
+            print('In ToggleMember: \n \
+                  \t Asked for on text but none has been declared')
+
+class InputMember(Member):
+    def __init__(self, memberType, memberName)):
+        Member.__init__(memberType, memberName))
+        self.setMsgBits()
+
+    def setMsgAddress(self, msgAddress):
+        self.msgAddress = msgAddress
+
+    def setMsgBytes(self, msgBytes):
+        self.firstMsgByte = msgBytes[0]
+        self.lastMsgByte = msgBytes[1]
+
+    def setMsgBits(self, msgBits = [1,8]):
+        self.firstMsgBit = msgBits[0]
+        self.lastMsgBit = msgBits[1]
+
+    def getMsgAddress(self, msgAddress):
+        try:
+            return self.msgAddress
+        except NameError:
+            print('In InputMember: \n \
+                  \t Asked for message address but none has been declared')
+
+    def setMsgBytes(self, msgBytes):
+        try:
+            return self.firstMsgByte, self.lastMsgByte
+        except NameError:
+            print('In InputMember: \n \
+                  \t Asked for message bytes but none have been declared')
+
+    def setMsgBits(self, msgBits = [1,8]):
+        try:
+            return self.firstMsgBit, self.lastMsgBit
+        except NameError:
+            print('In InputMember: \n \
+                  \t Asked for message bits but none have been declared')
     
-    def turnOffModulePwr(self,chosenModule):
-        self.sendOffModulePwrMsg(chosenModule)
 
-    def turnOnModulePwr(self,chosenModule):
-        self.sendOnModulePwrMsg(chosenModule)
+class OutputMemeber(Member):
+    def __init__(self, memberType, memberName)):
+        Member.__init__(memberType, memberName))
 
-    def turnOffMainPwr(self):
-        self.sendOffMainPwrMsg()
+    def setMsgAddress(self, msgAddress):
+        self.msgAddress = msgAddress
 
-    def turnOnMainPwr(self):
-        self.sendOnMainPwrMsg()
+    def setMsgBytes(self, msgBytes):
+        self.firstMsgByte = msgBytes[0]
+        self.lastMsgByte = msgBytes[1]
 
-    def sendOffModulePwrMsg(self,chosenModule):
-        print('turned module no.'+str(chosenModule)+' off')
+    def setMsgBits(self, msgBits = [1,8]):
+        self.firstMsgBit = msgBits[0]
+        self.lastMsgBit = msgBits[1]
 
-    def sendOnModulePwrMsg(self,chosenModule):
-        print('turned module no.'+str(chosenModule)+' on')
+    def getMsgAddress(self, msgAddress):
+        try:
+            return self.msgAddress
+        except NameError:
+            print('In InputMember: \n \
+                  \t Asked for message address but none has been declared')
 
-    def sendOffMainPwrMsg(self):
-        print('turned charger off')
+    def setMsgBytes(self, msgBytes):
+        try:
+            return self.firstMsgByte, self.lastMsgByte
+        except NameError:
+            print('In InputMember: \n \
+                  \t Asked for message bytes but none have been declared')
 
-    def sendOnMainPwrMsg(self):
-        print('turned charger on')
+    def setMsgBits(self, msgBits = [1,8]):
+        try:
+            return self.firstMsgBit, self.lastMsgBit
+        except NameError:
+            print('In InputMember: \n \
+                  \t Asked for message bits but none have been declared')
+
+class AlarmMemeber(Member):
+    def __init__(self, memberType, memberName)):
+        Member.__init__(memberType, memberName))
+
+    def 
+
+    def addAlarm(self):
+        
 
 class Controler():
 
