@@ -302,9 +302,9 @@ class Model():
                 line = line.strip()
                 while line != 'END_CONFIG':
                     if not line[0] != '#' or line != '':
+                        line = line.replace(' ','')
+                        line = split(':')
                         try:
-                            line = line.replace(' ','')
-                            line = split(':')
                             mainComponents[line[0]](line[1].replace('_',' '))
                         except KeyError:
                             print('In Model:\n'+\

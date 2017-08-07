@@ -2,7 +2,7 @@
 
 #lines started with '#' will be omitted
 
-MODULE
+MODULE: Moduł_nr._1
 
 	MEMBER: START/STOP
 		MEMBER_TYPE: toggle
@@ -128,38 +128,44 @@ MODULE
 	MEMBER: Awarie
 		MEMBER_TYPE: alarm
 			
-			ALRM
+			ALRM: rozwaliło_się
 				MSG_ADDRESS: 007
 				MSG_BYTE: 5
 				MSG_BIT: 1
+				ON_STATE: 1
+				RESET_MSG_ADDRESS: 007
 				RESET_MSG_BYTE: 5
 				RESET_MSG_BIT: 2
-				MSG_PRINT: rozwaliło_się
+				RESET_ON_STATE: 1
 			END_ALARM
 
-			ALARM
+			ALARM: rozwaliło_się_bardzo
 				MSG_ADDRESS: 007
 				MSG_BYTE: 5
 				MSG_BIT: 3
+				ON_STATE: 1
+				RESET_MSG_ADDRESS: 007
 				RESET_MSG_BYTE: 5
 				RESET_MSG_BIT: 4
-				MSG_PRINT: rozwaliło_się_bardzo
+				RESET_ON_STATE: 1
 			END_ALARM
 
-			ALARM			
+			ALARM: rozwaliło_się_tylko_trochę	
 				MSG_ADDRESS: 007
 				MSG_BYTE: 5
 				MSG_BIT: 5
+				ON_STATE: 1
+				RESET_MSG_ADDRESS: 007
 				RESET_MSG_BYTE: 5
 				RESET_MSG_BIT: 6
-				MSG_PRINT: rozwaliło_się_tylko_trochę 
+				RESET_ON_STATE: 1
 			END_ALARM
 
 	END_MEMBER
 
 END_MODULE
 
-MODULE
+MODULE: Moduł_nr._2
 
 	MEMBER: START/STOP
 		MEMBER_TYPE: toggle
@@ -285,38 +291,44 @@ MODULE
 	MEMBER: Awarie
 		MEMBER_TYPE: alarm
 			
-			ALRM
+			ALRM: rozwaliło_się
 				MSG_ADDRESS: 014
 				MSG_BYTE: 5
 				MSG_BIT: 1
+				ON_STATE: 1
+				RESET_MSG_ADDRESS: 014
 				RESET_MSG_BYTE: 5
 				RESET_MSG_BIT: 2
-				MSG_PRINT: rozwaliło_się
+				RESET_ON_STATE: 1
 			END_ALARM
 
-			ALARM
+			ALARM: rozwaliło_się_bardzo
 				MSG_ADDRESS: 014
 				MSG_BYTE: 5
 				MSG_BIT: 3
+				ON_STATE: 1
+				RESET_MSG_ADDRESS: 014
 				RESET_MSG_BYTE: 5
 				RESET_MSG_BIT: 4
-				MSG_PRINT: rozwaliło_się_bardzo
+				RESET_ON_STATE: 1
 			END_ALARM
 
-			ALARM			
+			ALARM: rozwaliło_się_tylko_trochę 	
 				MSG_ADDRESS: 014
 				MSG_BYTE: 5
 				MSG_BIT: 5
+				ON_STATE: 1
+				RESET_MSG_ADDRESS: 014
 				RESET_MSG_BYTE: 5
 				RESET_MSG_BIT: 6
-				MSG_PRINT: rozwaliło_się_tylko_trochę 
+				RESET_ON_STATE: 1
 			END_ALARM
 
 	END_MEMBER
 
 END_MODULE
 
-MODULE
+MODULE: Moduł_nr._3
 
 	MEMBER: START/STOP
 		MEMBER_TYPE: toggle
@@ -442,38 +454,44 @@ MODULE
 	MEMBER: Awarie
 		MEMBER_TYPE: alarm
 			
-			ALRM
+			ALRM: rozwaliło_się
 				MSG_ADDRESS: 021
 				MSG_BYTE: 5
 				MSG_BIT: 1
+				ON_STATE: 1
+				RESET_MSG_ADDRESS: 021
 				RESET_MSG_BYTE: 5
 				RESET_MSG_BIT: 2
-				MSG_PRINT: rozwaliło_się
+				RESET_ON_STATE: 1
 			END_ALARM
 
-			ALARM
+			ALARM: rozwaliło_się_bardzo
 				MSG_ADDRESS: 021
 				MSG_BYTE: 5
 				MSG_BIT: 3
+				ON_STATE: 1
+				RESET_MSG_ADDRESS: 021
 				RESET_MSG_BYTE: 5
 				RESET_MSG_BIT: 4
-				MSG_PRINT: rozwaliło_się_bardzo
+				RESET_ON_STATE: 1
 			END_ALARM
 
-			ALARM			
+			ALARM: rozwaliło_się_tylko_trochę
 				MSG_ADDRESS: 021
 				MSG_BYTE: 5
 				MSG_BIT: 5
+				ON_STATE: 1
+				RESET_MSG_ADDRESS: 021
 				RESET_MSG_BYTE: 5
 				RESET_MSG_BIT: 6
-				MSG_PRINT: rozwaliło_się_tylko_trochę 
+				RESET_ON_STATE: 1
 			END_ALARM
 
 	END_MEMBER
 
 END_MODULE
 
-MODULE
+MODULE: Moduł_nr._4 
 
 	MEMBER: START/STOP
 		MEMBER_TYPE: toggle
@@ -599,31 +617,37 @@ MODULE
 	MEMBER: Awarie
 		MEMBER_TYPE: alarm
 
-			ALRM
+			ALRM: rozwaliło_się
 				MSG_ADDRESS: 028
 				MSG_BYTE: 5
 				MSG_BIT: 1
+				ON_STATE: 1
+				RESET_MSG_ADDRESS: 028
 				RESET_MSG_BYTE: 5
 				RESET_MSG_BIT: 2
-				MSG_PRINT: rozwaliło_się
+				RESET_ON_STATE: 1
 			END_ALARM
 
-			ALARM
+			ALARM: rozwaliło_się_bardzo
 				MSG_ADDRESS: 028
 				MSG_BYTE: 5
 				MSG_BIT: 3
+				ON_STATE: 1
+				RESET_MSG_ADDRESS: 028
 				RESET_MSG_BYTE: 5
 				RESET_MSG_BIT: 4
-				MSG_PRINT: rozwaliło_się_bardzo
+				RESET_ON_STATE: 1
 			END_ALARM
 
-			ALARM			
+			ALARM: rozwaliło_się_tylko_trochę 	
 				MSG_ADDRESS: 028
 				MSG_BYTE: 5
 				MSG_BIT: 5
+				ON_STATE: 1
+				RESET_MSG_ADDRESS: 028
 				RESET_MSG_BYTE: 5
 				RESET_MSG_BIT: 6
-				MSG_PRINT: rozwaliło_się_tylko_trochę 
+				RESET_ON_STATE: 1
 			END_ALARM
 
 	END_MEMBER
