@@ -279,39 +279,72 @@ class View(pq.QWidget):
 class Model():
 
     def __init__(self):
-        self.initConfigFileAnalysators()
+        configFile = 'can_prog_config.txt'
+        self.initConfigFileAnalysators(configFile)
 
 
-    def initConfigFileAnalysators(self):
-        
+    def initiateDictionaries(self):
+        self.mainComponents{'MODULE': self.createModule}
 
-    def configureAccordingToConfigFile:
+
+    def createModule(moduleName):
         try:
-            with open(can_prog_config.txt) as configFile:
+            return Module(moduleName)
+        except Exception:
+            print('In Model:\n'+\
+                  '\t Creation of a new module failed')
+
+
+    def configureAccordingToConfigFile(configFile):
+        try:
+            with open(configFile) as cf:
                 line = cf.readline()
                 line = line.strip()
                 while line != 'END_CONFIG':
-                    if line[0] != '#' or line != '':
-                        self.createClass[line]()
+                    if not line[0] != '#' or line != '':
+                        try:
+                            line = line.replace(' ','')
+                            line = split(':')
+                            mainComponents[line[0]](line[1].replace('_',' '))
+                        except KeyError:
+                            print('In Model:\n'+\
+                                  '\t Error in config file: main component '+\
+                                  'type given does not exist')
+                        except IndexError:
+                            print('In Model:\n'+\
+                                  '\t no name was given for a main component')
+                        
                     line = cf.readline()
                     line = line.strip()
                         
 
         except NameError:
-            print('NameError: Config file (can_prog_config.txt) not found')
+            print('NameError: Config file ('+configFile+') not found')
             sys.exit()
-        
+
+
+class Module():
+    def __init__(self, moduleName):
+        self.moduleName = moduleName
+
+    def addMember(self, memberType, memberName):
+        member = 
+        try:
+            self.memberTab.append(member)
+        except NameError:
+            self.memberTab = array(member)
+
+  
 class Member():
     def __init__(self, memberType, memberName):
         self.memberType = memberType
-
         self.memberName = memberName
 
 
 class ToggleMember(Member):
     def __init__(self, memeberType, memberName)):
         Member.__init__(memberType, memberName))
-
+  
     def setOnMsg(self,msg):
         self.onMsg = msg
 
@@ -361,33 +394,41 @@ class InputMember(Member):
         self.msgAddress = msgAddress
 
     def setMsgBytes(self, msgBytes):
-        self.firstMsgByte = msgBytes[0]
-        self.lastMsgByte = msgBytes[1]
+        try:
+            self.firstMsgByte = msgBytes[0]
+            self.lastMsgByte = msgBytes[1]
+        except TypeError:
+            self.firstMsgByte = msgBytes
+            self.lastMsgByte = msgBytes
 
     def setMsgBits(self, msgBits = [1,8]):
-        self.firstMsgBit = msgBits[0]
-        self.lastMsgBit = msgBits[1]
+        try:
+            self.firstMsgBit = msgBits[0]
+            self.lastMsgBit = msgBits[1]
+        except TypeError:
+            self.firstMsgBit = msgBits
+            self.lastMsgBit = msgBits
 
     def getMsgAddress(self, msgAddress):
         try:
             return self.msgAddress
         except NameError:
-            print('In InputMember: \n \
-                  \t Asked for message address but none has been declared')
+            print('In InputMember:\n'+\
+                  '\t Asked for message address but none has been declared')
 
     def setMsgBytes(self, msgBytes):
         try:
             return self.firstMsgByte, self.lastMsgByte
         except NameError:
-            print('In InputMember: \n \
-                  \t Asked for message bytes but none have been declared')
+            print('In InputMember:\n'+\
+                  '\t Asked for message bytes but none have been declared')
 
     def setMsgBits(self, msgBits = [1,8]):
         try:
             return self.firstMsgBit, self.lastMsgBit
         except NameError:
-            print('In InputMember: \n \
-                  \t Asked for message bits but none have been declared')
+            print('In InputMember:\n'+\
+                  '\t Asked for message bits but none have been declared')
     
 
 class OutputMemeber(Member):
@@ -398,41 +439,179 @@ class OutputMemeber(Member):
         self.msgAddress = msgAddress
 
     def setMsgBytes(self, msgBytes):
-        self.firstMsgByte = msgBytes[0]
-        self.lastMsgByte = msgBytes[1]
-
+        try:
+            self.firstMsgByte = msgBytes[0]
+            self.lastMsgByte = msgBytes[1]
+        except TypeError:
+            self.firstMsgByte = msgBytes
+            self.lastMsgByte = msgBytes
+            
     def setMsgBits(self, msgBits = [1,8]):
-        self.firstMsgBit = msgBits[0]
-        self.lastMsgBit = msgBits[1]
+        try:
+            self.firstMsgBit = msgBits[0]
+            self.lastMsgBit = msgBits[1]
+        except TypeError:
+            self.firstMsgBit = msgBits
+            self.lastMsgBit = msgBits
 
     def getMsgAddress(self, msgAddress):
         try:
             return self.msgAddress
         except NameError:
-            print('In InputMember: \n \
-                  \t Asked for message address but none has been declared')
+            print('In InputMember:\n'+\
+                  '\t Asked for message address but none has been declared')
 
-    def setMsgBytes(self, msgBytes):
+    def getMsgBytes(self, msgBytes):
         try:
             return self.firstMsgByte, self.lastMsgByte
         except NameError:
-            print('In InputMember: \n \
-                  \t Asked for message bytes but none have been declared')
+            print('In InputMember:\n'+\
+                  '\t Asked for message bytes but none have been declared')
 
-    def setMsgBits(self, msgBits = [1,8]):
+    def getMsgBits(self, msgBits = [1,8]):
         try:
             return self.firstMsgBit, self.lastMsgBit
         except NameError:
-            print('In InputMember: \n \
-                  \t Asked for message bits but none have been declared')
+            print('In InputMember:\n'+\
+                  '\t Asked for message bits but none have been declared')
 
 class AlarmMemeber(Member):
     def __init__(self, memberType, memberName)):
         Member.__init__(memberType, memberName))
+        self.numberOfAlarms = 0
 
-    def 
+    class Alarm():
+        def __init__(self, alarmName):
+            self.alarmName = alarmName
+            
+        def setMsgAddress(self, msgAddress):
+            self.msgAddress = msgAddress
+                
+        def serMsgBytes(self, msgBytes):
+            try:
+                self.firstMsgByte = msgBytes[0]
+                self.lastMsgByte = msgBytes[1]
+            except TypeError:
+                self.firstMsgByte = msgBytes
+                self.lastMsgByte = msgBytes
 
-    def addAlarm(self):
+        def setMsgBits(self, msgBits = [1:8]):
+            try:
+                self.firstMsgBit = msgBits[0]
+                self.lastMsgBit = msgBits[1]
+            except TypeError:
+                self.firstMsgBit = msgBits
+                self.lastMsgBit = msgBitstry
+
+        def setOnState(self,onState):
+            self.onState = onState
+
+        def setResetMsgAddress(self, resetMsgAddress):
+            self.resetMsgAddress = resetMsgAddress
+
+        def setResetMsgBytes(self, resetMsgBytes):
+            try:
+                self.firstResetMsgByte = resetMsgBytes[0]
+                self.lastResetMsgByte = resetMsgBytes[1]
+            except TypeError:
+                self.firstResetMsgByte = resetMsgBytes
+                self.lastResetMsgByte = resetMsgBytes 
+
+        def setResetMsgBits(self, resetMsgBits = [1:8]):
+            try:
+                self.firstResetMsgBit = resetMsgBits[0]
+                self.lastResetMsgBit = resetMsgBits[1]
+            except TypeError:
+                self.firstResetMsgBit = resetMsgBits
+                self.lastRersetMsgBit = resetMsgBits
+                
+        def setResetOnState(self, resetOnState):
+            self.resetOnState = resetOnState
+            
+
+        def getAlarmName(self):
+            try:
+                return self.AlarmName
+            except NameError:
+                print('In Alarm:\n'+\
+                      '\t Asked for alarm name but none has been declared')
+
+        def getMsgAddress(self, msgAddress):
+            try:
+                return self.msgAddress
+            except NameError:
+                print('In Alarm:\n'+\
+                      '\t Asked for message address but none has been declared')
+                
+        def getMsgBytes(self, msgBytes):
+            try:
+                return self.firstMsgByte, self.lastMsgByte
+            except NameError:
+                print('In Alarm:\n'+\
+                      '\t Asked for message bytes but none have been declared')
+
+        def getMsgBits(self, msgBits = [1,8]):
+            try:
+                return self.firstMsgBit, self.lastMsgBit
+            except NameError:
+                print('In Alarm:\n'+\
+                      '\t Asked for message bits but none have been declared')
+
+        def getOnState(self):
+            try:
+                return self.onState
+            except NameError:
+                print('In Alarm:\n'+\
+                      '\t Asked for on state but none has been declared')
+
+        def getResetMsgBytes(self):
+            try:
+                return self.rself.firstResetMsgByte, self.lastResetMsgByte
+            except NameError:
+                print('In Alarm:\n'+\
+                      '\t Asked for reset message bytes but none have been'+\
+                      'declared')
+
+        def getResetMsgBits(self):
+            try:
+                return self.firstResetMsgBit, self.lastResetMsgBit
+            except NameError:
+                print('In Alarm:\n'+\
+                      '\t Asked for reset message bits but none have been'+\
+                      'declared')
+
+        def getResetOnState(self):
+            try:
+                return self.resetOnState
+            except NameError:
+                print('In Alarm:\n'+\
+                      '\t Asked for reset on state but none has been declared')
+            
+
+    def addAlarm(self, alarmName, msgAddress, msgBytes, resetMsgBytes,\
+                 msgBits = [1,8], onState = 1, resetMsgBits = [1,8],\
+                 resetOnState = 1, resetMsgAddress = None):
+        try:
+            self.alarmTab.append(self.Alarm(alarmName, msgAddress, msgBytes,\
+                                resetMsgBytes, msgBits, onState, resetMsgBits,\
+                                resetOnState, resetMsgAddress))
+        except NameError:
+            self.alarmTab = array(self.Alarm(alarmName, msgAddress, msgBytes,\
+                                resetMsgBytes, msgBits, onState, resetMsgBits,\
+                                resetOnState, resetMsgAddress))
+
+        self.numberOfAlarms += 1
+        
+    def getAlarm(self, alarmName):
+        try:
+            for i in range(self.numberOfAlarms):
+                if self.alarmTab[i].getAlarmName == alarmName:
+                    return self.alarmTab[i]
+        except NameError:
+            print('In AlarmMember:\n'+\
+                  '\t No alarm has been declared for this member')
+        except IndexError:
+            return self.alarmTab
         
 
 class Controler():
@@ -469,5 +648,5 @@ class Controler():
             print('error in controler.toggleMainPower wrong toggleString')
 
 if __name__ == "__main__":
-        sys.settrace
+        #sys.settrace
         con = Controler()

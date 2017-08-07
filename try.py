@@ -64,7 +64,11 @@ class lol:
                 if self.modulePropertyList[i] == propertyName:
                         return index
 
+def sis(one, two = None):
+    if two == None:
+        two = one
+    print(one, two)
+
 if __name__ == "__main__":
-    lol = lol()
-    print(lol.getIndexOfAProperty('Temp1'))
+    sis(5)
 
