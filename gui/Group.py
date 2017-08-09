@@ -1,3 +1,5 @@
+from numpy import array,append
+
 class Group():
     def __init__(self, groupName):
         self.groupName = groupName
@@ -12,7 +14,7 @@ class Group():
     def addMember(self, member):
         try:
             self.members = append(self.members, member)
-        except NameError:
+        except AttributeError:
             self.members = array(member)
 
     def getMemberArray(self):

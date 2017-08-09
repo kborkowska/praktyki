@@ -17,10 +17,12 @@ import sys
 class Model():
 
     def __init__(self):
+        self.END_FLAG = 1
         self.initiateDictionaries()
         configFile = 'can_prog_config.txt'
         self.mainComponents = array([])
         self.configureAccordingToConfigFile(configFile)
+        
         
 
     def initiateDictionaries(self):
@@ -46,35 +48,35 @@ class Model():
 
     def createToggleMember(self, memberType, memberName):
         try:
-            return ToggleMember(memberType, memberName)
+            return ToggleMember.ToggleMember(memberType, memberName)
         except Exception:
             print('In Model:\n'+\
                   '\t Tried to create toggle member but failed')
 
     def createInputMember(self, memberType, memberName):
         try:
-            return InputMember(memberType, memberName)
+            return InputMember.InputMember(memberType, memberName)
         except Exception:
             print('In Model:\n'+\
                   '\t Tried to create input member but failed')
 
     def createOutputMember(self, memberType, memberName):
         try:
-            return OutputMember(memberType, memberName)
+            return OutputMember.OutputMember(memberType, memberName)
         except Exception:
             print('In Model:\n'+\
                   '\t Tried to create output member but failed')
 
     def createAlarmMember(self, memberType, memberName):
         try:
-            return AlarmMember(memberType, memberName)
+            return AlarmMember.AlarmMember(memberType, memberName)
         except Exception:
             print('In Model:\n'+\
                   '\t Tried to create alarm member but failed')
 
     def setOnMsg(self, line, member):
         try:
-            memember.setOnMsg(line[1])
+            member.setOnMsg(line[1])
         except AttributeError:
             print('In Model: \n'+\
                   '\t Tried to set on msg but no function exist for '+\
@@ -83,7 +85,7 @@ class Model():
             
     def setOffMsg(self, line, member):
         try:
-            memember.setOffMsg(line[1])
+            member.setOffMsg(line[1])
         except AttributeError:
             print('In Model: \n'+\
                   '\t Tried to set off msg but no function exist for '+\
@@ -91,7 +93,7 @@ class Model():
 
     def setOnPrint(self, line, member):
         try:
-            memember.setOnPrint(line[1])
+            member.setOnText(line[1])
         except AttributeError:
             print('In Model: \n'+\
                   '\t Tried to set on print but no function exist for '+\
@@ -99,7 +101,7 @@ class Model():
 
     def setOffPrint(self, line, member):
         try:
-            memember.setOffPrint(line[1])
+            member.setOffText(line[1])
         except AttributeError:
             print('In Model: \n'+\
                   '\t Tried to set off print but no function exist for '+\
@@ -107,7 +109,7 @@ class Model():
 
     def setMsgAddress(self, line, member):
         try:
-            memember.setMsgAddress(line[1])
+            member.setMsgAddress(line[1])
         except AttributeError:
             print('In Model: \n'+\
                   '\t Tried to set msg address but no function exist for '+\
@@ -115,9 +117,9 @@ class Model():
 
     def setMsgByte(self, line, member):
         try:
-            memember.setMsgByte([line[1],line[2]])
+            member.setMsgBytes([line[1],line[2]])
         except IndexError:
-            memember.setMsgByte(line[1])
+            member.setMsgBytes(line[1])
         except AttributeError:
             print('In Model: \n'+\
                   '\t Tried to set msg byte but no function exist for '+\
@@ -125,9 +127,9 @@ class Model():
 
     def setMsgBit(self, line, member):
         try:
-            memember.setMsgBit([line[1],line[2]])
+            member.setMsgBits([line[1],line[2]])
         except IndexError:
-            memember.setMsgBit(line[1])
+            member.setMsgBits(line[1])
         except AttributeError:
             print('In Model: \n'+\
                   '\t Tried to set msg bit but no function exist for '+\
@@ -135,7 +137,7 @@ class Model():
 
     def setOnState(self, line, member):
         try:
-            memember.setOnState(line[1])
+            member.setOnState(line[1])
         except AttributeError:
             print('In Model: \n'+\
                   '\t Tried to set on state but no function exist for '+\
@@ -143,7 +145,7 @@ class Model():
 
     def setResetMsgAddress(self, line, member):
         try:
-            memember.setResetMsgAddress(line[1])
+            member.setResetMsgAddress(line[1])
         except AttributeError:
             print('In Model: \n'+\
                   '\t Tried to set reset msg address but no function '+\
@@ -151,9 +153,9 @@ class Model():
 
     def setResetMsgByte(self, line, member):
         try:
-            memember.setResetMsgByte([line[1],line[2]])
+            member.setResetMsgBytes([line[1],line[2]])
         except IndexError:
-            memember.setResetMsgByte(line[1])
+            member.setResetMsgBytes(line[1])
         except AttributeError:
             print('In Model: \n'+\
                   '\t Tried to set reset msg byte but no function exist '+\
@@ -161,9 +163,9 @@ class Model():
 
     def setResetMsgBit(self, line, member):
         try:
-            memember.setResetMsgBit([line[1],line[2]])
+            member.setResetMsgBits([line[1],line[2]])
         except IndexError:
-            memember.setResetMsgBit(line[1])
+            member.setResetMsgBits(line[1])
         except AttributeError:
             print('In Model: \n'+\
                   '\t Tried to set reset msg bit but no function exist '+\
@@ -171,7 +173,7 @@ class Model():
 
     def setResetOnState(self, line, member):
         try:
-            memember.setResetOnState(line[1])
+            member.setResetOnState(line[1])
         except AttributeError:
             print('In Model: \n'+\
                   '\t Tried to set reset on state but no function exist for '+\
@@ -179,45 +181,49 @@ class Model():
             
 
     def createGroup(self, groupName, cf):
-        try:
-            group = Group(self, groupName)
+        #try:
+        group = Group.Group(groupName)
+        line = self.getAndPrepareLine(cf)
+        while line[0] != 'END_GROUP':
+            group.addMember(self.branch(line, cf))
             line = self.getAndPrepareLine(cf)
-            while line != 'END_GROUP':
-                group.addMember(self.branch(line, cf))
-                line = self.getAndPrepareLine(cf)
-            return group
-        except Exception:
-            print('In Model:\n'+\
-                  '\t Creation of a new group failed')
+        return group
+        #except Exception:
+            #print('In Model:\n'+\
+                  #'\t Creation of a new group failed')
 
 
     def createModule(self, moduleName, cf):
-        try:
-            module = Module(self, moduleName)
+        #try:
+        module = Module.Module(moduleName)
+        line = self.getAndPrepareLine(cf)
+        while line[0] != 'END_MODULE':
+            module.addMember(self.branch(line, cf))
             line = self.getAndPrepareLine(cf)
-            while line != 'END_MODULE':
-                module.addMember(self.branch(line, cf))
-                line = self.getAndPrepareLine(cf)
-            return module
-        except Exception:
-            print('In Model:\n'+\
-                  '\t Creation of a new module failed')
+        return module
+        #except Exception:
+            #print('In Model:\n'+\
+                  #'\t Creation of a new module failed')
 
     def createMember(self, memberName, cf):
-        try:
+        #try:
+        line = self.getAndPrepareLine(cf)
+        member = self.members[line[1]](line[1],memberName)
+        line = self.getAndPrepareLine(cf)
+        while line[0] != 'END_MEMBER':
+            self.properties[line[0]](line, member)
             line = self.getAndPrepareLine(cf)
-            member = self.members[line[1]](line[1],memberName)
-            line = self.getAndPrepareLine(cf)
-            while line[0] != 'END_MEMBER':
-                self.properties[line[0]](line, member)
-                line = self.getAndPrepareLine(cf)
-            return member
-        except Exception:
-            print('In Model:\n'+\
-                  '\t Creation of a new member failed')
+        return member
+        #except Exception:
+            #print('In Model:\n'+\
+                  #'\t Creation of a new member failed')
 
     def getAndPrepareLine(self, cf):
         line = cf.readline()
+        #print(line)
+        '''if line == 'END_CONFIG':
+            self.END_FLAG = 0''
+        if self.END_FLAG:'''
         line = line.strip()
         if line == '':
             return self.getAndPrepareLine(cf)
@@ -227,17 +233,20 @@ class Model():
             line = line.replace(' ','')
             line = line.split(':')
             return line
+        #return -1
+
 
     def branch(self, line, cf):
-        try:
-            return self.components[line[0]](line[1].replace('_',' '),cf)
+        return self.components[line[0]](line[1].replace('_',' '),cf)
+        '''try:
+            
         except KeyError:
             print('In Model:\n'+\
                   '\t Error in config file: main component '+\
                   'type given does not exist')
         except IndexError:
             print('In Model:\n'+\
-                  '\t no name was given for a main component')
+                  '\t no name was given for a main component')'''
 
 
     def configureAccordingToConfigFile(self, configFile):

@@ -1,8 +1,8 @@
 from Member import Member
 
 class ToggleMember(Member):
-    def __init__(self, memeberType, memberName):
-        Member.__init__(memberType, memberName)
+    def __init__(self, memberType, memberName):
+        Member.__init__(self,memberType, memberName)
   
     def setOnMsg(self,msg):
         self.onMsg = msg

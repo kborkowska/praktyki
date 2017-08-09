@@ -1,3 +1,5 @@
+from numpy import array, append
+
 class Module():
     def __init__(self, moduleName):
         self.moduleName = moduleName
@@ -5,12 +7,12 @@ class Module():
     def addMember(self, member):
         try:
             self.members = append(self.members, member)
-        except NameError:
+        except AttributeError:
             self.members = array(member)
 
     def getMemberArray(self):
         try:
             return self.members
-        except NameError:
+        except AttributeError:
             print('In Module:\n'+\
                   '\t Asked for member array but none has been declared')

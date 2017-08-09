@@ -2,18 +2,18 @@
 
 from Member import Member
 
-class AlarmMemeber(Member):
+class AlarmMember(Member):
     def __init__(self, memberType, memberName):
-        Member.__init__(memberType, memberName)
+        Member.__init__(self, memberType, memberName)
             
     def setMsgAddress(self, msgAddress):
         self.msgAddress = msgAddress
                 
-    def serMsgBytes(self, msgBytes):
+    def setMsgBytes(self, msgBytes):
         try:
             self.firstMsgByte = msgBytes[0]
             self.lastMsgByte = msgBytes[1]
-        except TypeError:
+        except IndexError:
             self.firstMsgByte = msgBytes
             self.lastMsgByte = msgBytes
 
@@ -21,9 +21,9 @@ class AlarmMemeber(Member):
         try:
             self.firstMsgBit = msgBits[0]
             self.lastMsgBit = msgBits[1]
-        except TypeError:
+        except IndexError:
             self.firstMsgBit = msgBits
-            self.lastMsgBit = msgBitstry
+            self.lastMsgBit = msgBits
 
     def setOnState(self,onState):
         self.onState = onState
@@ -35,7 +35,7 @@ class AlarmMemeber(Member):
         try:
             self.firstResetMsgByte = resetMsgBytes[0]
             self.lastResetMsgByte = resetMsgBytes[1]
-        except TypeError:
+        except IndexError:
             self.firstResetMsgByte = resetMsgBytes
             self.lastResetMsgByte = resetMsgBytes 
 
@@ -43,9 +43,9 @@ class AlarmMemeber(Member):
         try:
             self.firstResetMsgBit = resetMsgBits[0]
             self.lastResetMsgBit = resetMsgBits[1]
-        except TypeError:
+        except IndexError:
             self.firstResetMsgBit = resetMsgBits
-            self.lastRersetMsgBit = resetMsgBits
+            self.lastResetMsgBit = resetMsgBits
                 
     def setResetOnState(self, resetOnState):
         self.resetOnState = resetOnState
@@ -57,21 +57,21 @@ class AlarmMemeber(Member):
             print('In Alarm:\n'+\
                   '\t Asked for alarm name but none has been declared')
 
-    def getMsgAddress(self, msgAddress):
+    def getMsgAddress(self):
         try:
             return self.msgAddress
         except NameError:
             print('In Alarm:\n'+\
                   '\t Asked for message address but none has been declared')
                 
-    def getMsgBytes(self, msgBytes):
+    def getMsgBytes(self):
         try:
             return self.firstMsgByte, self.lastMsgByte
         except NameError:
             print('In Alarm:\n'+\
                   '\t Asked for message bytes but none have been declared')
 
-    def getMsgBits(self, msgBits = [1,8]):
+    def getMsgBits(self):
         try:
             return self.firstMsgBit, self.lastMsgBit
         except NameError:
@@ -85,9 +85,16 @@ class AlarmMemeber(Member):
             print('In Alarm:\n'+\
                   '\t Asked for on state but none has been declared')
 
+    def getResetMsgAddress(self):
+        try:
+            return self.resetMsgAddress
+        except NameError:
+            print('In Alarm:\n'+\
+                  '\t Asked for message address but none has been declared')
+
     def getResetMsgBytes(self):
         try:
-            return self.rself.firstResetMsgByte, self.lastResetMsgByte
+            return self.firstResetMsgByte, self.lastResetMsgByte
         except NameError:
             print('In Alarm:\n'+\
                   '\t Asked for reset message bytes but none have been'+\
