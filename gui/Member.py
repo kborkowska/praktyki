@@ -18,3 +18,6 @@ class Member():
         except NameError:
             print('In Member.getType():\n'+\
                   '\t No type declared')
+
+    def canHaveChildren(self):
+        return False

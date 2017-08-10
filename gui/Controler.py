@@ -27,6 +27,21 @@ class Controler():
     def execteShutdown(self):
         sys.exit()
 
+    def getModuleNumber(self):
+        return self.module.getModuleNumber()
+
+    def getModule(self, moduleIndex = None, moduleName = None):
+        if isinstance(moduleIndex, int):
+            return self.model.getModuleDueIndex(moduleIndex)
+        elif isinstance(moduleName, str):
+            return self.model.getModuleDueName(moduleName)
+        else:
+            return None
+
+    def getModel(self):
+        return self.model
+        
+
 if __name__ == "__main__":
         #sys.settrace
         con = Controler()

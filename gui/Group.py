@@ -23,3 +23,8 @@ class Group():
         except NameError:
             print('In Module:\n'+\
                   '\t Asked for member array but none has been declared')
+            return None
+
+
+    def canHaveChildren(self):
+        return True

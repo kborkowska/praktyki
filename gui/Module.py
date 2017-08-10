@@ -16,3 +16,10 @@ class Module():
         except AttributeError:
             print('In Module:\n'+\
                   '\t Asked for member array but none has been declared')
+            return None
+
+    def getName(self):
+        return self.moduleName
+
+    def canHaveChildren(self):
+        return True

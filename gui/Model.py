@@ -17,7 +17,8 @@ import sys
 class Model():
 
     def __init__(self):
-        self.END_FLAG = 1
+        #self.END_FLAG = 1
+        self.moduleNumber = 0
         self.initiateDictionaries()
         configFile = 'can_prog_config.txt'
         self.mainComponents = array([])
@@ -196,6 +197,7 @@ class Model():
     def createModule(self, moduleName, cf):
         #try:
         module = Module.Module(moduleName)
+        self.moduleNumber += 1
         line = self.getAndPrepareLine(cf)
         while line[0] != 'END_MODULE':
             module.addMember(self.branch(line, cf))
@@ -266,6 +268,33 @@ class Model():
             print('In Model:\n'+\
                   '\t Tried to get main components but none were declared')
 
-    #def getModuleComponents(self):
-        #try:
-            #return 
+
+    def getModuleNumber(self):
+        try:
+            return self.moduleNumber
+        except NameError:
+            print('In Module:\n'+\
+                  '\t no module number has been declared')
+
+    def getComponentNumber(self):
+        try:
+            return len(self.mainComponents)
+        except NameError:
+            print('In Module:\n'+\
+                  '\t no components number has been declared')
+
+
+    def getModuleDueIndex(self, index):
+        for i in range(index, len(self.mainComponents)):
+            if isinstance(self.mainComponents[i], Module.Module):
+                return self.mainComponents[i]
+            
+
+    def getModuleDueName(self, mame):
+        for i in range(len(self.mainComponents)):
+            if isinstance(self.mainComponents[i], Module.Module):
+                if self.mainComponents[i].getName() == name:
+                    return self.mainComponents[i]
+
+
+        
