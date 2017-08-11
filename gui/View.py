@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+ #!/usr/bin/env python3
 
 from PyQt4 import QtGui as pq
 from PyQt4 import QtCore as pc
@@ -26,11 +26,14 @@ class View(pq.QWidget):
 
     def createAndShowGUI(self):
         self.setLayout(pq.QHBoxLayout())
+        #self.layout().setMargin(0)
         self.layout().setSpacing(0)
+        #self.layout().setContentsMargins(0,0,0,0)
 
         self.secondaryLayouts = self.createInsideLayouts(self, grid = True,\
                                                                gridIdx = 1)
 
+        #print(self.secondaryLayouts[1]().objectName())
         self.createBasicStatisticPanel(self.secondaryLayouts[0])
 
         self.createModulePanelAndTabs(self.secondaryLayouts[1],\
@@ -52,27 +55,58 @@ class View(pq.QWidget):
             else:
                 label.setStyleSheet('background-color:'+\
                                     self.selectedComponentColor)
+            moduleTabLayout().setSpacing(0)
+            moduleTabLayout().setMargin(0)
             moduleTabLayout().addWidget(label)
 
-            moduleMembers = module.getMemberArray()
-            
+            newWidget = pq.QWidget()
+            newWidget.setStyleSheet('background-color:'+\
+                                    self.selectedComponentColor)
+            newWidget.setLayout(self.createMemberInfoGrid(module))
+            moduleLayout().addWidget(newWidget)
+ 
+        moduleLayout().setCurrentIndex(0)
+
     def createMemberInfoGrid(self,parent):
         layout = pq.QGridLayout()
-        layout.addWidget(pq.QLabel(parent.getName(),1,1)
-        members = parent.getMemberArray()
-        for i,mem in enumerate(members):
+        layout.addWidget(pq.QLabel(parent.getName()),1,1)
+        i = 4
+        for mem in parent.getMemberArray():
             if mem.canHaveChildren():
-                layout.addLayout(createMemberInfoGrid(self,mem),i+2,1)
+                layout.addLayout(self.createMemberInfoGrid(mem),int(i/2),i%2+1)
+                i += 1
             else:
                 memberType = mem.getType()
+                #inLayout = pq.QHBoxLayout()
                 if memberType == 'input':
-                    layout.addWidget(pq.QLabel(mem.getName()))
+                    layout.addWidget(pq.QLabel(mem.getName()),int(i/2),i%2+1)
+                    i += 1
                     value = ValueInputLabel('  ')
                     value.setStyleSheet('background-color:'+self.valueLabel)
-                    
+                    layout.addWidget(value,int(i/2),i%2+1)
+                    i += 1
+                elif memberType == 'output':
+                    layout.addWidget(pq.QLabel(mem.getName()),int(i/2),i%2+1)
+                    i += 1
+                    value = pq.QLabel('  ')
+                    value.setStyleSheet('background-color:'+self.valueLabel)
+                    layout.addWidget(value,int(i/2),i%2+1)
+                    i += 1
+                elif memberType == 'toggle':
+                    layout.addWidget(pq.QLabel(mem.getName()),int(i/2),i%2+1)
+                    i += 1
+                    button = pq.QPushButton(mem.getOffText())
+                    button.setStyleSheet('background-color:'+self.offBtnColor)
+                    layout.addWidget(button,int(i/2),i%2+1)
+                    i += 1
+                elif memberType == 'alarm':
+                    layout.addWidget(pq.QLabel('  '),int(i/2),i%2+1)
+                    i += 2
+                #layout.addLayout(inLayout)
+
+        return layout
 
             
-
     def createBasicStatisticPanel(self, pane):
         mainOnOffBtn = pq.QPushButton('On')
         mainOnOffBtn.setStyleSheet('background-color:'+self.onBtnColor)
@@ -160,24 +194,27 @@ class View(pq.QWidget):
         if not grid:
             for i in range(numberOfPanes):
                 newLayout = pq.QVBoxLayout()
+                newLayout.setMargin(0)
                 newLayouts.append(ref(newLayout))
                 parent.layout().insertLayout(i,newLayout)
         else:
             for i in range(numberOfPanes):
-                colorWidget = pq.QWidget()
-                parent.layout().insertWidget(i,colorWidget)
-
+                
                 if not i in gridIdx:
+                    colorWidget = pq.QWidget()
+                    #colorWidget.setMargin(0)
+                    parent.layout().insertWidget(i,colorWidget)
                     newLayout = pq.QVBoxLayout()
                     colorWidget.setStyleSheet(\
                         'background-color:'+self.normalBackgroundColor)
+                    colorWidget.setLayout(newLayout)
                 else:
-                    newLayout = pq.QGridLayout()
-                    colorWidget.setStyleSheet(\
-                        'background-color:'+self.selectedComponentColor)
-
+                    newLayout = pq.QStackedLayout()
+                    newLayout.setMargin(0)
+                    newLayout.setObjectName('lol')
+                    parent.layout().insertLayout(i,newLayout)
                 #newLayout.setMargin(0)
-                colorWidget.setLayout(newLayout)
+                
                 newLayouts.append(ref(newLayout))
 
         return newLayouts
@@ -186,9 +223,9 @@ class View(pq.QWidget):
 
         self.normalBackgroundColor = 'rgb(235,235,235)'
         
-        self.selectedComponentColor = 'rgb(235,235,223)'
+        self.selectedComponentColor = 'rgb(246,246,235)'
         self.workingComponentColor = 'rgb(233,255,202)'
-        self.shutoffComponentColor = 'rgb(233,255,202)'
+        self.shutoffComponentColor = 'rgb(235,235,235)'
         self.alarmComponentColor = 'rgb(252,77,42)'
 
         self.onBtnColor = 'rgb(136,255,67)'
@@ -203,14 +240,35 @@ class View(pq.QWidget):
 			 desktopGeometry.width()*3/5,\
                          desktopGeometry.height()*3/5)
 
+    def changeSelectedModel(self, index):
+        self.secondaryLayouts[1]().setCurrentIndex(index)
+        for i in range(self.secondaryLayouts[2]().count()):
+            print(index)
+            ch = self.secondaryLayouts[2]().itemAt(i)
+            if i != index:
+                ch.setSelected(False)
+                ch.setStyleSheet('background-color:'+self.shutoffComponentColor)
+            else:
+                ch.setSelected(True)
+                ch.setStyleSheet('background-color:'+self.selectedComponentColor)
+        
+        
 
 class ModelLabel(pq.QLabel):
 
     def __init__(self, *args, **kwargs):
         super(pq.QLabel,self).__init__(*args, **kwargs)
+        self.seleced = False
+
+    def setSelected(self, isSelected):
+        self.seleced = isSelscted
 
     def mousePressEvent(self, event):
-        self.parent.changeSelectedModel()
+        p = self.parent()
+        while p.parent() != None:
+            p = p.parent()
+        text = self.text()
+        p.changeSelectedModel(int(text.split('.')[1])-1)
         
 class ValueInputLabel(pq.QLabel):
 

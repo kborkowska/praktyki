@@ -28,3 +28,12 @@ class Group():
 
     def canHaveChildren(self):
         return True
+
+
+    def getName(self):
+        try:
+            return self.groupName
+        except NameError:
+            print('In Module:\n'+\
+                  '\t Asked for group name but none has been declared')
+            return None
