@@ -2,33 +2,98 @@
 
 #lines started with '#' will be omitted
 
+#MAIN: Main
+
+#	MEMBER: START/STOP
+#		MEMBER_TYPE: toggle
+#			MSG_ADDRESS: 101
+#			MSG_BYTE: 1
+#			MSG_BIT: 1
+#			ON_STATE: 1
+#			ON_PRINT: ON
+#			OFF_PRINT: OFF
+#	END_MEMBER
+
+#	GROUP: Wejście
+#		MEMBER: U<sub>in</sub>
+#			MEMBER_TYPE: input
+#				MSG_ADDRESS: 102
+#				MSG_BYTE: 1:2
+#				#MSG_BIT: 
+#		END_MEMBER
+
+#		MEMBER: I<sub>in</sub>
+#			MEMBER_TYPE: input
+#				MSG_ADDRESS: 102
+#				MSG_BYTE: 3:4
+#				#MSG_BIT: 
+#		END_MEMBER
+
+#		MEMBER: P<sub>in</sub>
+#			MEMBER_TYPE: input
+#				MSG_ADDRESS: 102
+#				MSG_BYTE: 5:6
+#				#MSG_BIT: 
+#		END_MEMBER
+
+#	END_GROUP
+
+#	GROUP: Wyjście
+
+#		MEMBER: U<sub>out</sub>
+#			MEMBER_TYPE: output
+#				MSG_ADDRESS: 103
+#				MSG_BYTE: 1:2
+#				#MSG_BIT: 
+#		END_MEMBER
+
+#		MEMBER: I<sub>out</sub>
+#			MEMBER_TYPE: output
+#				MSG_ADDRESS: 103
+#				MSG_BYTE: 3:4
+#				#MSG_BIT: 
+#		END_MEMBER
+
+#		MEMBER: P<sub>out</sub>
+#			MEMBER_TYPE: output
+#				MSG_ADDRESS: 103
+#				MSG_BYTE: 5:6
+#				#MSG_BIT: 
+#		END_MEMBER
+
+#	END_GROUP
+
+END_MAIN
+
 MODULE: Moduł_nr._1
 
 	MEMBER: START/STOP
 		MEMBER_TYPE: toggle
-			ON_MSG: 001#FFFF.FFFF.FFFF.FFFF
-			OFF_MSG: 001#0000.0000.0000.0000
+			MSG_ADDRESS: 001
+			MSG_BYTE: 1
+			MSG_BIT: 1
+			ON_STATE: 1
 			ON_PRINT: ON
 			OFF_PRINT: OFF
 	END_MEMBER
 
 	GROUP: Wejście
 		MEMBER: U<sub>in</sub>
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 002
 				MSG_BYTE: 1:2
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: I<sub>in</sub>
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 002
 				MSG_BYTE: 3:4
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: P<sub>in</sub>
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 002
 				MSG_BYTE: 5:6
 				#MSG_BIT: 
@@ -39,21 +104,21 @@ MODULE: Moduł_nr._1
 	GROUP: Wyjście
 
 		MEMBER: U<sub>out</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 003
 				MSG_BYTE: 1:2
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: I<sub>out</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 003
 				MSG_BYTE: 3:4
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: P<sub>out</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 003
 				MSG_BYTE: 5:6
 				#MSG_BIT: 
@@ -64,21 +129,21 @@ MODULE: Moduł_nr._1
 	GROUP: Temperatura
 
 		MEMBER: Temp<sub>1</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 004
 				MSG_BYTE: 1:2
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: Temp<sub>2</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 004
 				MSG_BYTE: 3:4
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: Temp<sub>3</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 004
 				MSG_BYTE: 5:6
 				#MSG_BIT: 
@@ -89,14 +154,14 @@ MODULE: Moduł_nr._1
 	GROUP: Zadane
 
 		MEMBER: U
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 005
 				MSG_BYTE: 1:2
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: I
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 005
 				MSG_BYTE: 3:4
 				#MSG_BIT: 
@@ -106,8 +171,9 @@ MODULE: Moduł_nr._1
 
 	MEMBER: Tryb pracy
 		MEMBER_TYPE: toggle
-			ON_MSG: 006#FFFF.FFFF.FFFF.FFFF
-			OFF_MSG: 006#0000.0000.0000.0000
+			MSG_ADDRESS: 006
+			MSG_BYTE: 1
+			MSG_BIT: 1
 			ON_PRINT: napi‭ęciowy
 			OFF_PRINT: prądowy
 	END_MEMBER
@@ -158,30 +224,31 @@ MODULE: Moduł_nr._2
 
 	MEMBER: START/STOP
 		MEMBER_TYPE: toggle
-			ON_MSG: 008#FFFF.FFFF.FFFF.FFFF
-			OFF_MSG: 008#0000.0000.0000.0000
+			MSG_ADDRESS: 008
+			MSG_BYTE: 1
+			MSG_BIT: 1
 			ON_PRINT: ON
-			OFF_PRINT: OFFND_MEMBER
+			OFF_PRINT: OFF
 	END_MEMBER
 
 	GROUP: Wejście
 
 		MEMBER: U<sub>in</sub>
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 009
 				MSG_BYTE: 1:2
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: I<sub>in</sub>
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 009
 				MSG_BYTE: 3:4
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: P<sub>in</sub>
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 009
 				MSG_BYTE: 5:6
 				#MSG_BIT: 
@@ -192,21 +259,21 @@ MODULE: Moduł_nr._2
 	GROUP: Wyjście
 
 		MEMBER: U<sub>out</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 010
 				MSG_BYTE: 1:2
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: I<sub>out</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 010
 				MSG_BYTE: 3:4
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: P<sub>out</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 010
 				MSG_BYTE: 5:6
 				#MSG_BIT: 
@@ -217,21 +284,21 @@ MODULE: Moduł_nr._2
 	GROUP: Temperatura
 
 		MEMBER: Temp<sub>1</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 011
 				MSG_BYTE: 1:2
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: Temp<sub>2</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 011
 				MSG_BYTE: 3:4
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: Temp<sub>3</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 011   
 				MSG_BYTE: 5:6
 				#MSG_BIT: 
@@ -242,14 +309,14 @@ MODULE: Moduł_nr._2
 	GROUP: Zadane
 
 		MEMBER: U
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 012
 				MSG_BYTE: 1:2
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: I
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 012
 				MSG_BYTE: 3:4
 				#MSG_BIT: 
@@ -259,8 +326,9 @@ MODULE: Moduł_nr._2
 
 	MEMBER: Tryb pracy
 		MEMBER_TYPE: toggle
-			ON_MSG: 013#FFFF.FFFF.FFFF.FFFF
-			OFF_MSG: 013#0000.0000.0000.0000
+			MSG_ADDRESS: 013
+			MSG_BYTE: 1
+			MSG_BIT: 1
 			ON_PRINT: napi‭ęciowy
 			OFF_PRINT: prądowy
 	END_MEMBER
@@ -311,30 +379,31 @@ MODULE: Moduł_nr._3
 
 	MEMBER: START/STOP
 		MEMBER_TYPE: toggle
-			ON_MSG: 015#FFFF.FFFF.FFFF.FFFF
-			OFF_MSG: 015#0000.0000.0000.0000
+			MSG_ADDRESS: 015
+			MSG_BYTE: 1
+			MSG_BIT: 1
 			ON_PRINT: ON
-			OFF_PRINT: OFFND_MEMBER
+			OFF_PRINT: OFF
 	END_MEMBER
 
 	GROUP: Wejście
 
 		MEMBER: U<sub>in</sub>
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 016
 				MSG_BYTE: 1:2
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: I<sub>in</sub>
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 016
 				MSG_BYTE: 3:4
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: P<sub>in</sub>
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 016
 				MSG_BYTE: 5:6
 				#MSG_BIT: 
@@ -345,46 +414,46 @@ MODULE: Moduł_nr._3
 	GROUP: Wyjście
 
 		MEMBER: U<sub>out</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 017
 				MSG_BYTE: 1:2
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: I<sub>out</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 017
 				MSG_BYTE: 3:4
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: P<sub>out</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 017
 				MSG_BYTE: 5:6
 				#MSG_BIT: 
-		END_MEMBE
+		END_MEMBER
 
 	END_GROUP
 
 	GROUP: Temperatura
 
 		MEMBER: Temp<sub>1</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 018
 				MSG_BYTE: 1:2
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: Temp<sub>2</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 018
 				MSG_BYTE: 3:4
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: Temp<sub>3</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 018
 				MSG_BYTE: 5:6
 				#MSG_BIT: 
@@ -395,14 +464,14 @@ MODULE: Moduł_nr._3
 	GROUP: Zadane
 
 		MEMBER: U
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 019
 				MSG_BYTE: 1:2
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: I
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 019
 				MSG_BYTE: 3:4
 				#MSG_BIT: 
@@ -412,14 +481,14 @@ MODULE: Moduł_nr._3
 
 	MEMBER: Tryb pracy
 		MEMBER_TYPE: toggle
-			ON_MSG: 020#FFFF.FFFF.FFFF.FFFF
-			OFF_MSG: 020#0000.0000.0000.0000
+			MSG_ADDRESS: 020
+			MSG_BYTE: 1
+			MSG_BIT: 1
 			ON_PRINT: napi‭ęciowy
 			OFF_PRINT: prądowy
 	END_MEMBER
 
 	GROUP: Awarie
-		MEMBER_TYPE: alarm
 			
 		MEMBER: rozwaliło_się
 			MEMBER_TYPE: alarm
@@ -465,30 +534,31 @@ MODULE: Moduł_nr._4
 
 	MEMBER: START/STOP
 		MEMBER_TYPE: toggle
-			ON_MSG: 022#FFFF.FFFF.FFFF.FFFF
-			OFF_MSG: 022#0000.0000.0000.0000
+			MSG_ADDRESS: 022
+			MSG_BYTE: 1
+			MSG_BIT: 1
 			ON_PRINT: ON
-			OFF_PRINT: OFFND_MEMBER
+			OFF_PRINT: OFF
 	END_MEMBER
 
 	GROUP: Wejście
 
 		MEMBER: U<sub>in</sub>
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 023
 				MSG_BYTE: 1:2
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: I<sub>in</sub>
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 023
 				MSG_BYTE: 3:4
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: P<sub>in</sub>
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 023
 				MSG_BYTE: 5:6
 				#MSG_BIT: 
@@ -499,21 +569,21 @@ MODULE: Moduł_nr._4
 	GROUP: Wyjście
 
 		MEMBER: U<sub>out</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 024
 				MSG_BYTE: 1:2
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: I<sub>out</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 024
 				MSG_BYTE: 3:4
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: P<sub>out</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 024
 				MSG_BYTE: 5:6
 				#MSG_BIT: 
@@ -524,21 +594,21 @@ MODULE: Moduł_nr._4
 	GROUP: Temperatura
 
 		MEMBER: Temp<sub>1</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 025
 				MSG_BYTE: 1:2
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: Temp<sub>2</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 025
 				MSG_BYTE: 3:4
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: Temp<sub>3</sub>
-			MEMBER_TYPE: input
+			MEMBER_TYPE: output
 				MSG_ADDRESS: 025
 				MSG_BYTE: 5:6
 				#MSG_BIT: 
@@ -549,14 +619,14 @@ MODULE: Moduł_nr._4
 	GROUP: Zadane
 
 		MEMBER: U
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 026
 				MSG_BYTE: 1:2
 				#MSG_BIT: 
 		END_MEMBER
 
 		MEMBER: I
-			MEMBER_TYPE: output
+			MEMBER_TYPE: input
 				MSG_ADDRESS: 026
 				MSG_BYTE: 3:4
 				#MSG_BIT: 
@@ -566,14 +636,14 @@ MODULE: Moduł_nr._4
 
 	MEMBER: Tryb pracy
 		MEMBER_TYPE: toggle
-			ON_MSG: 027#FFFF.FFFF.FFFF.FFFF
-			OFF_MSG: 027#0000.0000.0000.0000
+			MSG_ADDRESS: 027
+			MSG_BYTE: 1
+			MSG_BIT: 1
 			ON_PRINT: napi‭ęciowy
 			OFF_PRINT: prądowy
 	END_MEMBER
 
 	GROUP: Awarie
-		MEMBER_TYPE: alarm
 
 		MEMBER: rozwaliło_się
 			MEMBER_TYPE: alarm

@@ -1,8 +1,8 @@
-from numpy import array, append
+#!/usr/bin/env python3
 
 from weakref import ref
 
-class Module():
+class Main():
 	def __init__(self, parent, moduleName):
 		self.moduleName = moduleName
 		if parent is None:
