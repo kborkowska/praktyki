@@ -2,66 +2,66 @@
 
 #lines started with '#' will be omitted
 
-#MAIN: Main
+MAIN: Main
 
-#	MEMBER: START/STOP
-#		MEMBER_TYPE: toggle
-#			MSG_ADDRESS: 101
-#			MSG_BYTE: 1
-#			MSG_BIT: 1
-#			ON_STATE: 1
-#			ON_PRINT: ON
-#			OFF_PRINT: OFF
-#	END_MEMBER
+	MEMBER: START/STOP
+		MEMBER_TYPE: toggle
+			MSG_ADDRESS: 101
+			MSG_BYTE: 1
+			MSG_BIT: 1
+			ON_STATE: 1
+			ON_PRINT: ON
+			OFF_PRINT: OFF
+	END_MEMBER
 
-#	GROUP: Wejście
-#		MEMBER: U<sub>in</sub>
-#			MEMBER_TYPE: input
-#				MSG_ADDRESS: 102
-#				MSG_BYTE: 1:2
-#				#MSG_BIT: 
-#		END_MEMBER
+	GROUP: Wejście
+		MEMBER: U<sub>in</sub>
+			MEMBER_TYPE: input
+				MSG_ADDRESS: 102
+				MSG_BYTE: 1:2
+				#MSG_BIT: 
+		END_MEMBER
 
-#		MEMBER: I<sub>in</sub>
-#			MEMBER_TYPE: input
-#				MSG_ADDRESS: 102
-#				MSG_BYTE: 3:4
-#				#MSG_BIT: 
-#		END_MEMBER
+		MEMBER: I<sub>in</sub>
+			MEMBER_TYPE: input
+				MSG_ADDRESS: 102
+				MSG_BYTE: 3:4
+				#MSG_BIT: 
+		END_MEMBER
 
-#		MEMBER: P<sub>in</sub>
-#			MEMBER_TYPE: input
-#				MSG_ADDRESS: 102
-#				MSG_BYTE: 5:6
-#				#MSG_BIT: 
-#		END_MEMBER
+		MEMBER: P<sub>in</sub>
+			MEMBER_TYPE: input
+				MSG_ADDRESS: 102
+				MSG_BYTE: 5:6
+				#MSG_BIT: 
+		END_MEMBER
 
-#	END_GROUP
+	END_GROUP
 
-#	GROUP: Wyjście
+	GROUP: Wyjście
 
-#		MEMBER: U<sub>out</sub>
-#			MEMBER_TYPE: output
-#				MSG_ADDRESS: 103
-#				MSG_BYTE: 1:2
-#				#MSG_BIT: 
-#		END_MEMBER
+		MEMBER: U<sub>out</sub>
+			MEMBER_TYPE: output
+				MSG_ADDRESS: 103
+				MSG_BYTE: 1:2
+				#MSG_BIT: 
+		END_MEMBER
 
-#		MEMBER: I<sub>out</sub>
-#			MEMBER_TYPE: output
-#				MSG_ADDRESS: 103
-#				MSG_BYTE: 3:4
-#				#MSG_BIT: 
-#		END_MEMBER
+		MEMBER: I<sub>out</sub>
+			MEMBER_TYPE: output
+				MSG_ADDRESS: 103
+				MSG_BYTE: 3:4
+				#MSG_BIT: 
+		END_MEMBER
 
-#		MEMBER: P<sub>out</sub>
-#			MEMBER_TYPE: output
-#				MSG_ADDRESS: 103
-#				MSG_BYTE: 5:6
-#				#MSG_BIT: 
-#		END_MEMBER
+		MEMBER: P<sub>out</sub>
+			MEMBER_TYPE: output
+				MSG_ADDRESS: 103
+				MSG_BYTE: 5:6
+				#MSG_BIT: 
+		END_MEMBER
 
-#	END_GROUP
+	END_GROUP
 
 END_MAIN
 

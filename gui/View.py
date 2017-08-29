@@ -59,7 +59,6 @@ class View(pq.QWidget):
 
 		#print(self.secondaryLayouts[1]().objectName())
 		self.createBasicStatisticPanel(self.secondaryLayouts[0])
-
 		self.createModulePanelAndTabs(self.secondaryLayouts[1],\
 									  self.secondaryLayouts[2])
 
@@ -70,7 +69,7 @@ class View(pq.QWidget):
 		moduleNumber = model.getModuleNumber()
 		self.selectedComponentIdx = 0
 		
-		for i in range(moduleNumber):
+		for i in range(1,moduleNumber):
 			module = model.getModuleDueIndex(i)
 			label = ModelLabel(module.getName())
 			if i != self.selectedComponentIdx:
@@ -151,26 +150,59 @@ class View(pq.QWidget):
 						  layout.currentIndex())
 		self.sender().setText(text)
 		self.sender().setStyleSheet('background-color:'+self.toggleColors[text])
-		
+
+	def ToggleMain(self):
+		text = self.controler().getModel().toggle(self.sender().objectName(),\
+						  'main')
+		self.sender().setText(text)
+		self.sender().setStyleSheet('background-color:'+self.toggleColors[text])
 
 	def createBasicStatisticPanel(self, pane):
-		mainOnOffBtn = pq.QPushButton('On')
-		mainOnOffBtn.setMinimumSize( self.width()/3.5, self.height()/10)
-		mainOnOffBtn.setStyleSheet('background-color:'+self.onBtnColor)
-		mainOnOffBtn.setObjectName('mainOnOffBtn')
-		#mainOnOffBtn.clicked.connect(self.toggleOnOffBtn)
+		model = self.controler().getModel()
+		layout = pq.QVBoxLayout()
+		if model.hasMain == True:
+			ma = model.getMain()
+			for i,child in enumerate(ma.members):
+				if child.canHaveChildren() == True:
+					layout.addLayout(self.createMemberInfoGrid(child, False))
+				elif child.memberType == 'toggle':
+					button = pq.QPushButton(child.getOffText())
+					button.setObjectName(child.getName())
+					button.setStyleSheet('background-color:'+self.offBtnColor)
+					button.setMinimumSize( self.width()/3.5, self.height()/10)
+					button.clicked.connect(self.ToggleMain)
+					child.setViewObject(button)
+					layout.addWidget(button)
+				else:
+					layout.addLayout(self.createMemberInfoGrid(child, True))
 
-		pane().addWidget(mainOnOffBtn)
+			labels = []
+			labels = 'Info z baterii'
+			layout.addLayout(self.createInfoGrid(labels))
 
-		self.labelsIn = 'Wejście','U<sub>in</sub>','I<sub>in</sub>','P<sub>in</sub>'
-		self.labelsOut = 'Wyjście','U<sub>out</sub>','I<sub>out</sub>',\
-					'P<sub>out</sub>'
-		labels = self.labelsIn, self.labelsOut
-		pane().addLayout(self.createInfoGrid(labels))
+			pane().addLayout(layout)
+			frame = pq.QFrame()
+			frame.setFrameStyle(pq.QFrame.VLine)
+			frame.setFrameShadow(pq.QFrame.Plain)
+			pane().addWidget(frame)
+		else:
+			mainOnOffBtn = pq.QPushButton('On')
+			mainOnOffBtn.setMinimumSize( self.width()/3.5, self.height()/10)
+			mainOnOffBtn.setStyleSheet('background-color:'+self.onBtnColor)
+			mainOnOffBtn.setObjectName('mainOnOffBtn')
+			#mainOnOffBtn.clicked.connect(self.toggleOnOffBtn)
 
-		labels = []
-		labels = 'Info z baterii'
-		pane().addLayout(self.createInfoGrid(labels))
+			pane().addWidget(mainOnOffBtn)
+
+			self.labelsIn = 'Wejście','U<sub>in</sub>','I<sub>in</sub>','P<sub>in</sub>'
+			self.labelsOut = 'Wyjście','U<sub>out</sub>','I<sub>out</sub>',\
+							'P<sub>out</sub>'
+			labels = self.labelsIn, self.labelsOut
+			pane().addLayout(self.createInfoGrid(labels))
+
+			labels = []
+			labels = 'Info z baterii'
+			pane().addLayout(self.createInfoGrid(labels))
 
 
 	def createInfoGrid(self, labels, module = False):
@@ -256,7 +288,10 @@ class View(pq.QWidget):
 					colorWidget = pq.QWidget()
 					#colorWidget.setMargin(0)
 					parent.layout().insertWidget(i,colorWidget)
-					newLayout = pq.QVBoxLayout()
+					if i == 0:
+						newLayout = pq.QHBoxLayout()
+					else:
+						newLayout = pq.QVBoxLayout()
 					colorWidget.setStyleSheet(\
 						'background-color:'+self.normalBackgroundColor)
 					colorWidget.setLayout(newLayout)

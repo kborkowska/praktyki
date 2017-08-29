@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from numpy import array, append
 
 from weakref import ref
 

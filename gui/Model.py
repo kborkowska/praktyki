@@ -9,6 +9,8 @@ import Group
 
 import Module
 
+import Main
+
 from numpy import array
 from numpy import append
 
@@ -20,6 +22,7 @@ class Model():
 
 	def __init__(self, controler):
 		#self.END_FLAG = 1
+		self.hasMain = False
 		self.controler = ref(controler)
 		self.moduleNumber = 0
 		self.initiateDictionaries()
@@ -28,10 +31,12 @@ class Model():
 		self.configureAccordingToConfigFile(configFile)
 		self.msgIterator = 0
 
+
 	def initiateDictionaries(self):
 		self.msgInAddresses = {}
 		self.msgOutAddresses = {}
-		self.components={'MODULE': self.createModule,
+		self.components={'MAIN':self.createMain,
+						 'MODULE': self.createModule,
 						 'MEMBER': self.createMember,
 						 'GROUP': self.createGroup}
 		self.members={'toggle': self.createToggleMember,
@@ -50,6 +55,21 @@ class Model():
 						 'RESET_MSG_BYTE': self.setResetMsgByte,
 						 'RESET_MSG_BIT': self.setResetMsgBit,
 						 'RESET_ON_STATE': self.setResetOnState}
+
+	def createMain(self, mainName, cf, parent):
+		#try:
+		self.hasMain = True
+		print('lol')
+		main = Main.Main(parent, mainName)
+		self.moduleNumber += 1
+		line = self.getAndPrepareLine(cf)
+		while line[0] != 'END_MAIN':
+			main.addMember(self.branch(line, cf, main))
+			line = self.getAndPrepareLine(cf)
+		return main
+		#except Exception:
+			#print('In Model:\n'+\
+				  #'\t Creation of a new module failed')
 
 	def createToggleMember(self, parent, memberType, memberName):
 		try:
@@ -310,7 +330,12 @@ class Model():
 				return self.mainComponents[i]
 			
 
-	def getModuleDueName(self, mame):
+	def getMain(self):
+		for i in range(len(self.mainComponents)):
+			if isinstance(self.mainComponents[i], Main.Main):
+				return self.mainComponents[i]
+
+	def getModuleDueName(self, name):
 		for i in range(len(self.mainComponents)):
 			if isinstance(self.mainComponents[i], Module.Module):
 				if self.mainComponents[i].getName() == name:
@@ -318,8 +343,11 @@ class Model():
 
 	def toggle(self, toggleName, moduleIndex):
 		#print(toggleName)
-		return self.toggleChild(toggleName, self.mainComponents[moduleIndex].getMemberArray())
-				
+		if moduleIndex == 'main':
+			return self.toggleChild(toggleName, self.getMain().getMemberArray())
+		else:
+			return self.toggleChild(toggleName, self.mainComponents[moduleIndex].getMemberArray())
+
 
 	def toggleChild(self, toggleName, components):
 		for i in components:
